@@ -8,6 +8,7 @@
 /synthesize
 /source/py/ethernet
 run
+*.lock
 *.wf
 *.fdc
 *.log
