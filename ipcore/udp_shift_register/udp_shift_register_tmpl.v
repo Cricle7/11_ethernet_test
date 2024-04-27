@@ -6,9 +6,9 @@
 //   * Change the signal names in the port associations
 
 
-udp_shift_register the_instance_name (
-  .din(din),      // input [7:0]
-  .clk(clk),      // input
-  .rst(rst),      // input
-  .dout(dout)     // output [7:0]
-);
+// udp_shift_register the_instance_name (
+//   .din(din),      // input [7:0]
+//   .clk(clk),      // input
+//   .rst(rst),      // input
+//   .dout(dout)     // output [7:0]
+// );

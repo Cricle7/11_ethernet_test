@@ -6,6 +6,8 @@
 /place_route
 /report_timing
 /synthesize
+/source/py/ethernet
+run
 *.wf
 *.fdc
 *.log

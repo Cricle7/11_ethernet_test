@@ -23,7 +23,7 @@
 module ethernet_test#(
     parameter       LOCAL_MAC = 48'ha0_b1_c2_d3_e1_e1,
     parameter       LOCAL_IP  = 32'hC0_A8_01_0B,//192.168.1.11
-    parameter       LOCL_PORT = 16'h1F90,
+    parameter       LOCL_PORT = 16'h1F90,//8080
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
     parameter       DEST_PORT = 16'h1F90 
 )(
