@@ -45,7 +45,9 @@ module ip_rx(
     output reg             ip_rx_end,
     output reg             ip_checksum_error
 ) ;
-    `include "check_sum.vh"
+
+    `include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
+    //`include "check_sum.vh"
     reg  [15:0]            ip_rx_cnt ;
     reg  [15:0]            ip_rec_data_length ;
               

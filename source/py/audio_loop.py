@@ -1,30 +1,28 @@
-#!/usr/bin/python3.6
-from scapy.all import *
-import numpy as np
+import socket
 
-tim = np.array([])
-datax = np.array([])
-ttemp = 0
-bagsize = 100
-sample_bag = 1
+def main():
+    # 1.创建一个udp套接字
+    udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-def pack_callback(packet):
-    p = packet
+    # 2.绑定本地的相关信息，如果一个网络程序不绑定，则系统会随机分配
+    # 30000  表示本地的端口 ip一般不用写
+    local_addr = ("", 8080)
+    udp_socket.bind(local_addr)
 
-    # 如果UDP包中含有数据层，则把Raw曾的数据提取出来
-    if 'Raw' in p:
-        data = p.getlayer(Raw)
-        for each in data.load:
-            tim = np.append(tim, ttemp / (bagsize *sample_bag))
-            # datax为数据数组
-            datax = np.append(datax, int(each))
-            # ttemp为所有数据的个数
-            ttemp += 1  # 数据个数
-            # bagsize为一组显示单元，控制数组长度，避免数组无限长导致的开销加大
-            if ttemp > bagsize:
-                self.tim = np.delete(self.tim, [0])
-                self.datax = np.delete(self.datax, [0])
-                
-# while 1:
-#     sniff(filter='ip src 192.168.1.11 and udp and udp port 8080', prn=lambda x:x.summary(), count=1)
-sniff(filter='udp', prn=pack_callback)
+    # 3. 等待接收对方发送的数据
+    recv_data = udp_socket.recvfrom(1024)  
+    # 1024表示本次接收的最大字节数
+
+    # 6. 显示对方发送的数据
+    # 接收到的数据recv_data是一个元组
+    # 第1个元素是对方发送的数据
+    # 第2个元素是对方的ip和端口
+    print(recv_data[0].decode('gbk'))
+    print(recv_data[1])
+
+    # 3.关闭套接字
+    udp_socket.close()
+
+
+if __name__ == "__main__":
+    main()
