@@ -41,7 +41,7 @@ module eth_udp_test#(
 );
     
     localparam UDP_WIDTH = 32 ;
-    localparam UDP_DEPTH = 5 ;
+    localparam UDP_DEPTH = 368;//最大大小为1500 - 20 - 8 = 1472字节
     reg   [7:0]          ram_wr_data ;
     reg                  ram_wr_en ;
     wire                 udp_ram_data_req ;
@@ -66,8 +66,8 @@ module eth_udp_test#(
     parameter SEND          = 9'b001_000_000 ;
     parameter WAIT          = 9'b010_000_000 ;
     parameter CHECK_ARP     = 9'b100_000_000 ;
-    //parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
-    parameter ONE_SECOND_CNT= 32'd125;//32'd12500;//
+    parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
+    //parameter ONE_SECOND_CNT= 32'd125;//32'd12500;//
     
     reg [8:0]    state  ;
     reg [8:0]    state_n ;
@@ -214,12 +214,12 @@ module eth_udp_test#(
         .mac_rx_datain            (  gmii_rxd_1d           ) //input   [7:0]   mac_rx_datain
     );
 
-     reg [159 : 0] test_data = {8'h77,8'h77,8'h77,8'h2E,   //{"w","w","w","."}; 
+     reg [159 : 0] test_data_eye = {8'h77,8'h77,8'h77,8'h2E,   //{"w","w","w","."}; 
                                8'h6D,8'h65,8'h79,8'h65,   //{"m","e","y","e"}; 
                                8'h73,8'h65,8'h6D,8'h69,   //{"s","e","m","i"}; 
                                8'h2E,8'h63,8'h6F,8'h6D,   //{".","c","o","m"}; 
                                8'h20,8'h20,8'h20,8'h0A  };//{" "," "," ","\n"};
-
+    reg [1175:0] test_data = {0,test_data_eye};
     always@(posedge rgmii_clk)
     begin
         if(rstn == 1'b0)
