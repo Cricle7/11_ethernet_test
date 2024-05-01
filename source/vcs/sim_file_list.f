@@ -22,6 +22,7 @@
 ../icmp.v
 ../mac_tx.v
 ../tb_ethernet.v
+../tb_eth_udp_test.v
 ../../
 ../../ipcore/icmp_rx_ram_8_256/rtl/ipml_sdpram_v1_6_icmp_rx_ram_8_256.v
 ../../ipcore/icmp_rx_ram_8_256/rtl/icmp_rx_ram_8_256_init_param.v

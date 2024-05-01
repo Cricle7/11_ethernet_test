@@ -12,7 +12,7 @@ ANLY_FLAGS := $(ANLY_FLAGS) -full64 -sverilog -kdb -lca  -override_timescale=1ns
 ANLY_LOGS = vlogan.log
 anly:
 	vlogan $(ANLY_FLAGS) $(ANLY_DEF)  $(ANLY_FL) -l $(ANLY_LOGS)
-ELB_TOP := work.tb_ethernet
+ELB_TOP := work.tb_eth_udp_test
 ELB_FLAGS := $(ELB_FLAGS) -full64 -debug_all -kdb -lca -j20
 ELB_LOGS = vcs.log
 ELB_LINK := $(ELB_LINK) -P ${VERDI_HOME}/share/PLI/VCS/LINUX64/novas.tab ${VERDI_HOME}/share/PLI/VCS/LINUX64/pli.a 

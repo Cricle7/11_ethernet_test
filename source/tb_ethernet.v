@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module ethernet_test_tb();
+module tb_ethernet();
 
     // Parameters
     localparam CLK_PERIOD = 20; // Clock period in ns
@@ -13,10 +13,15 @@ module ethernet_test_tb();
 
     // Outputs
     wire led;
-    reg phy_rstn;
+    wire phy_rstn;
     wire rgmii_txc;
     wire rgmii_tx_ctl;
     wire [3:0] rgmii_txd;
+
+    GTP_GRS GRS_INST(
+        .GRS_N(1'b1)
+        ) ;
+
 
     // Instantiate DUT
     ethernet_test #(
@@ -43,10 +48,6 @@ module ethernet_test_tb();
     // Initial stimulus
     initial begin
         // Reset
-        phy_rstn = 0;
-        #10;
-        phy_rstn = 1;
-
         // Add your test stimulus here
         // rgmii_rxc, rgmii_rx_ctl, rgmii_rxd should be driven accordingly
 
@@ -54,8 +55,8 @@ module ethernet_test_tb();
         $monitor("Time=%0t, led=%b, rgmii_txc=%b, rgmii_tx_ctl=%b, rgmii_txd=%h", $time, led, rgmii_txc, rgmii_tx_ctl, rgmii_txd);
         
         // End simulation after some time
-        #100000;
-        $finish;
+        //#100000;
+        //$finish;
     end
 
 endmodule
