@@ -10,7 +10,7 @@ def main():
     udp_socket.bind(local_addr)
 
     # 3. 等待接收对方发送的数据
-    recv_data = udp_socket.recvfrom(1024)  
+    recv_data = udp_socket.recvfrom(1600)  
     # 1024表示本次接收的最大字节数
 
     # 6. 显示对方发送的数据
