@@ -46,7 +46,7 @@ module ip_tx(
     output reg [7:0]     ip_tx_data,
     output reg           ip_tx_end
 ) ;
-    `include "check_sum.vh"   
+    `include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
     localparam MAC_TYPE      = 16'h0800 ;
     localparam IP_VERSION    = 4'h4     ;  //ipv4
     localparam HEADER_LEN    = 4'h5     ;  //header length

@@ -7,6 +7,9 @@
 /report_timing
 /synthesize
 /source/py/ethernet
+/source/vcs/*
+!/source/vcs/sim_file_list.f
+!/source/vcs/Makefile
 run
 *.lock
 *.wf
