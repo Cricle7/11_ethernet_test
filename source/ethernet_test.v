@@ -23,9 +23,10 @@
 module ethernet_test#(
     parameter       LOCAL_MAC = 48'ha0_b1_c2_d3_e1_e1,
     parameter       LOCAL_IP  = 32'hC0_A8_01_0B,//192.168.1.11
-    parameter       LOCL_PORT = 16'h1F90,//8080
+    parameter       LOCL_PORT = 16'h1F91,//8081
+    parameter       DEST_MAC  = 48'h04_7C_16_EA_2C_AE,
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
-    parameter       DEST_PORT = 16'h1F90 
+    parameter       DEST_PORT = 16'h1F91 
 )(
     input        clk_50m,
     output reg   led,
@@ -98,6 +99,7 @@ module ethernet_test#(
         .LOCAL_IP                 (LOCAL_IP                ),// 32'hC0_A8_01_6E,//192.168.1.110
         .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
                                                            
+        .DEST_MAC                 (DEST_MAC                ),// 
         .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
         .DEST_PORT                (DEST_PORT               ) // 16'h8080 
 )eth_udp_test(

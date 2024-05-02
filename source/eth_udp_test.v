@@ -25,6 +25,7 @@ module eth_udp_test#(
     parameter       LOCAL_IP  = 32'hC0_A8_01_6E,//192.168.1.110
     parameter       LOCL_PORT = 16'h8080,
 
+    parameter       DEST_MAC  = 48'h04_D9_F5_89_43_66,
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
     parameter       DEST_PORT = 16'h8080 
 )(
@@ -185,6 +186,7 @@ module eth_udp_test#(
         .LOCAL_IP                 (LOCAL_IP                ),// 32'hC0_A8_01_6E,//192.168.1.110
         .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
                                                            
+        .DEST_MAC                 (DEST_MAC                ),// 
         .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
         .DEST_PORT                (DEST_PORT               ) // 16'h8080 
 )udp_ip_mac_top(
