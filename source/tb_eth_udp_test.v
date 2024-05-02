@@ -54,11 +54,17 @@ module tb_eth_udp_test();
         // gmii_rx_dv, gmii_rxd should be driven accordingly
 
         // Monitor outputs
-        $monitor("Time=%0t, gmii_tx_en=%b, gmii_txd=%h, udp_rec_data_valid=%b, udp_rec_rdata=%h, udp_rec_data_length=%d", $time, gmii_tx_en, gmii_txd, udp_rec_data_valid, udp_rec_rdata, udp_rec_data_length);
+        //$monitor("Time=%0t, gmii_tx_en=%b, gmii_txd=%h, udp_rec_data_valid=%b, udp_rec_rdata=%h, udp_rec_data_length=%d", $time, gmii_tx_en, gmii_txd, udp_rec_data_valid, udp_rec_rdata, udp_rec_data_length);
         
         // End simulation after some time
         #1000;
         //$finish;
     end
 
+    initial begin
+        $fsdbDumpvars;
+        $fsdbDumpfile("tb.fsdb");
+        #3_000_000_000
+        $finish;
+    end
 endmodule
