@@ -67,8 +67,11 @@ module eth_udp_test#(
     parameter SEND          = 9'b001_000_000 ;
     parameter WAIT          = 9'b010_000_000 ;
     parameter CHECK_ARP     = 9'b100_000_000 ;
-    parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
-    //parameter ONE_SECOND_CNT= 32'd125;//32'd12500;//
+    `ifdef SIMULATION
+        parameter ONE_SECOND_CNT= 32'd125;//32'd12500;//
+    `else
+        parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
+    `endif
     
     reg [8:0]    state  ;
     reg [8:0]    state_n ;
