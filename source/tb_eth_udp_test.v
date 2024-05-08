@@ -8,15 +8,28 @@ module tb_eth_udp_test();
     // Inputs
     reg rgmii_clk = 0;
     reg rstn = 0;
-    reg gmii_rx_dv = 0;
-    reg [7:0] gmii_rxd = 0;
 
+    reg gmii_rx_dv_client;
+    reg [7:0] gmii_rxd_client;
     // Outputs
-    wire gmii_tx_en;
-    wire [7:0] gmii_txd;
-    wire udp_rec_data_valid;
-    wire [7:0] udp_rec_rdata;
-    wire [15:0] udp_rec_data_length;
+    wire gmii_tx_en_client;
+    wire [7:0] gmii_txd_client;
+    wire udp_rec_data_valid_client;
+    wire [7:0] udp_rec_rdata_client;
+    wire [15:0] udp_rec_data_length_client;
+
+    reg gmii_rx_dv_host = 0;
+    reg [7:0] gmii_rxd_host = 0;
+    // Outputs
+    wire gmii_tx_en_host;
+    wire [7:0] gmii_txd_host;
+    wire udp_rec_data_valid_host;
+    wire [7:0] udp_rec_rdata_host;
+    wire [15:0] udp_rec_data_length_host;
+
+    assign gmii_rxd_client = gmii_txd_host;
+    assign gmii_rx_dv_client = gmii_tx_en_host;
+
 
     GTP_GRS GRS_INST(
         .GRS_N(1'b1)
@@ -28,18 +41,35 @@ module tb_eth_udp_test();
         .LOCL_PORT(16'h8080),
         .DEST_IP(32'hC0_A8_01_69),
         .DEST_PORT(16'h8080)
-    ) dut (
+    ) client (
         .rgmii_clk(rgmii_clk),
         .rstn(rstn),
-        .gmii_rx_dv(gmii_rx_dv),
-        .gmii_rxd(gmii_rxd),
-        .gmii_tx_en(gmii_tx_en),
-        .gmii_txd(gmii_txd),
-        .udp_rec_data_valid(udp_rec_data_valid),
-        .udp_rec_rdata(udp_rec_rdata),
-        .udp_rec_data_length(udp_rec_data_length)
+        .gmii_rx_dv(gmii_rx_dv_client),
+        .gmii_rxd(gmii_rxd_client),
+        .gmii_tx_en(gmii_tx_en_client),
+        .gmii_txd(gmii_txd_client),
+        .udp_rec_data_valid(udp_rec_data_valid_client),
+        .udp_rec_rdata(udp_rec_rdata_client),
+        .udp_rec_data_length(udp_rec_data_length_client)
     );
 
+    eth_udp_test #(
+        .LOCAL_MAC(48'h12_11_11_11_11_11),
+        .LOCAL_IP(32'hC0_A8_01_69),
+        .LOCL_PORT(16'h8080),
+        .DEST_IP(32'hC0_A8_01_6E),
+        .DEST_PORT(16'h8080)
+    ) host (
+        .rgmii_clk(rgmii_clk),
+        .rstn(rstn),
+        .gmii_rx_dv(gmii_rx_dv_host),
+        .gmii_rxd(gmii_rxd_host),
+        .gmii_tx_en(gmii_tx_en_host),
+        .gmii_txd(gmii_txd_host),
+        .udp_rec_data_valid(udp_rec_data_valid_host),
+        .udp_rec_rdata(udp_rec_rdata_host),
+        .udp_rec_data_length(udp_rec_data_length_host)
+    );
     // Clock generation
     always #(CLK_PERIOD / 2) rgmii_clk = ~rgmii_clk;
 
@@ -67,4 +97,5 @@ module tb_eth_udp_test();
         #3_000_000_000
         $finish;
     end
+
 endmodule

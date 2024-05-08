@@ -21,49 +21,41 @@
 
 
 module udp_tx #(
-    parameter LOCAL_PORT_NUM = 16'hf000    //Ô´ï¿½Ë¿Úºï¿½
+    parameter LOCAL_PORT_NUM = 16'hf000    //Ô´¶Ë¿ÚºÅ
 ) (
-    input wire         udp_send_clk,      //Ê±ï¿½ï¿½ï¿½Åºï¿½                                                                                                                                                                                                                                                                                                                                                                
-    input wire         rstn,              //ï¿½ï¿½Î»ï¿½ÅºÅ£ï¿½ï¿½Íµï¿½Æ½ï¿½ï¿½Ð§                                                                                                                                                                                                                                                                                                                                                    
+    input wire         udp_send_clk,      //Ê±ÖÓÐÅºÅ                                                                                                                                                                                                                                                                                                                                                                
+    input wire         rstn,              //¸´Î»ÐÅºÅ£¬µÍµçÆ½ÓÐÐ§                                                                                                                                                                                                                                                                                                                                                    
                                                                                                                                                                                                                                                                                                                                                                                                                     
     //from software app                                                                                                                                                                                                                                                                                                                                                                                             
-    input wire         app_data_in_valid, //ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ÅºÅ£ï¿½ï¿½ßµï¿½Æ½ï¿½ï¿½Ð§                                                                                                                                                                                                                                                                                                                        
-    input wire [7:0]   app_data_in,       //ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                                                                                                                                                                                            
-    input wire [15:0]  app_data_length,   //ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½ÕµÄµï¿½Ç°ï¿½ï¿½ï¿½Ý°ï¿½ï¿½Ä³ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½udpï¿½ï¿½ipï¿½ï¿½mac ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ö½ï¿½                                                                                                                                                                                                                                                                                               
-    input wire [15:0]  udp_dest_port,     //ï¿½ï¿½Ä£ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½Õµï¿½ï¿½ï¿½ï¿½Ý°ï¿½ï¿½ï¿½Ô´ï¿½Ë¿Úºï¿½                                                                                                                                                                                                                                                                                                                                    
-    input wire         app_data_request,  //ï¿½Ã»ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬¸ßµï¿½Æ½ï¿½ï¿½Ð§                                                                                                                                                                                                                                                                                                                                        
+    input wire         app_data_in_valid, //±¾Ä£¿é´ÓÍâ²¿Ëù½ÓÊÕµÄÊý¾ÝÊä³öÓÐÐ§ÐÅºÅ£¬¸ßµçÆ½ÓÐÐ§                                                                                                                                                                                                                                                                                                                        
+    input wire [7:0]   app_data_in,       //±¾Ä£¿é´ÓÍâ²¿Ëù½ÓÊÕµÄÊý¾ÝÊä³ö                                                                                                                                                                                                                                                                                                                                            
+    input wire [15:0]  app_data_length,   //±¾Ä£¿é´ÓÍâ²¿Ëù½ÓÊÕµÄµ±Ç°Êý¾Ý°üµÄ³¤¶È£¨²»º¬udp¡¢ip¡¢mac Ê×²¿£©£¬µ¥Î»£º×Ö½Ú                                                                                                                                                                                                                                                                                               
+    input wire [15:0]  udp_dest_port,     //±¾Ä£¿é´ÓÍâ²¿Ëù½ÓÊÕµÄÊý¾Ý°üµÄÔ´¶Ë¿ÚºÅ                                                                                                                                                                                                                                                                                                                                    
+    input wire         app_data_request,  //ÓÃ»§½Ó¿ÚÊý¾Ý·¢ËÍÇëÇó£¬¸ßµçÆ½ÓÐÐ§                                                                                                                                                                                                                                                                                                                                        
                                                                                                                                                                                                                                                                                                                                                                                                                     
-    output wire        udp_send_ready,    //ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ readyï¿½ï¿½requestï¿½ï¿½ackï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½Êµï¿½Öµï¿½                                                                                                                                                                                                                                                                                                                          
-    output wire        udp_send_ack,      //ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ readyï¿½ï¿½requestï¿½ï¿½ackï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½Êµï¿½Öµï¿½                                                                                                                                                                                                                                                                                                                          
+    output wire        udp_send_ready,    //ÎÕÊÖÊÇ»ùÓÚ ready¡¢request¡¢ackÈý¸öÐÅºÅÀ´ÊµÏÖµÄ                                                                                                                                                                                                                                                                                                                          
+    output wire        udp_send_ack,      //ÎÕÊÖÊÇ»ùÓÚ ready¡¢request¡¢ackÈý¸öÐÅºÅÀ´ÊµÏÖµÄ                                                                                                                                                                                                                                                                                                                          
                                                                                                                                                                                                                                                                                                                                                                                                                     
-    input wire         ip_send_ready,     //ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ readyï¿½ï¿½requestï¿½ï¿½ackï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½Êµï¿½Öµï¿½                                                                                                                                                                                                                                                                                                                          
-    input wire         ip_send_ack,       //ï¿½ï¿½ï¿½ï¿½ï¿½Ç»ï¿½ï¿½ï¿½ readyï¿½ï¿½requestï¿½ï¿½ackï¿½ï¿½ï¿½ï¿½ï¿½Åºï¿½ï¿½ï¿½Êµï¿½Öµï¿½                                                                                                                                                                                                                                                                                                                          
+    input wire         ip_send_ready,     //ÎÕÊÖÊÇ»ùÓÚ ready¡¢request¡¢ackÈý¸öÐÅºÅÀ´ÊµÏÖµÄ                                                                                                                                                                                                                                                                                                                          
+    input wire         ip_send_ack,       //ÎÕÊÖÊÇ»ùÓÚ ready¡¢request¡¢ackÈý¸öÐÅºÅÀ´ÊµÏÖµÄ                                                                                                                                                                                                                                                                                                                          
     //to IP_send                                                                                                                                                                                                                                                                                                                                                                                                    
-    output wire        udp_send_request,  //ï¿½Ã»ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬¸ßµï¿½Æ½ï¿½ï¿½Ð§                                                                                                                                                                                                                                                                                                                                        
-    output reg         udp_data_out_valid,//ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ÅºÅ£ï¿½ï¿½ßµï¿½Æ½ï¿½ï¿½Ð§                                                                                                                                                                                                                                                                                                                                      
-    output reg [7:0]   udp_data_out,      //ï¿½ï¿½ï¿½Íµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½                                                                                                                                                                                                                                                                                                                                                          
-    output reg [15:0]  udp_packet_length  //ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ý°ï¿½ï¿½Ä³ï¿½ï¿½È£ï¿½ï¿½ï¿½ï¿½ï¿½udpï¿½ï¿½ipï¿½ï¿½mac ï¿½×²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½Ö½ï¿½                                                                                                                                                                                                                                                                                                                   
+    output wire        udp_send_request,  //ÓÃ»§½Ó¿ÚÊý¾Ý·¢ËÍÇëÇó£¬¸ßµçÆ½ÓÐÐ§                                                                                                                                                                                                                                                                                                                                        
+    output reg         udp_data_out_valid,//·¢ËÍµÄÊý¾ÝÊä³öÓÐÐ§ÐÅºÅ£¬¸ßµçÆ½ÓÐÐ§                                                                                                                                                                                                                                                                                                                                      
+    output reg [7:0]   udp_data_out,      //·¢ËÍµÄÊý¾ÝÊä³ö                                                                                                                                                                                                                                                                                                                                                          
+    output reg [15:0]  udp_packet_length  //µ±Ç°Êý¾Ý°üµÄ³¤¶È£¨²»º¬udp¡¢ip¡¢mac Ê×²¿£©£¬µ¥Î»£º×Ö½Ú                                                                                                                                                                                                                                                                                                                   
 );
 
     reg [3:0]   cnt; 
     wire [7:0]  shift_data_out;
     reg  [15:0] trans_data_cnt;
 
-    localparam  CHECKSUM = 16'h0000;        //ï¿½ï¿½ï¿½ï¿½UDPï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½Ð£ï¿½ï¿½Í¹ï¿½ï¿½Ü£ï¿½Ð£ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½0
-
-    localparam  IDLE = 2'd0;
-    localparam  WAIT_ACK = 2'd1;
-    localparam  SEND_UDP_HEADER = 2'd2;
-    localparam  SEND_UDP_PACKET = 2'd3;
+    localparam  CHECKSUM = 16'h0000;        //¼ÙÈçUDP°ü²»Ê¹ÓÃÐ£ÑéºÍ¹¦ÄÜ£¬Ð£ÑéºÍ²¿·ÖÐèÈ«²¿ÖÃ0
     
-    reg  [1:0]  state;
-    reg  [1:0]  state_n;
-
     assign udp_send_ready = state != IDLE;//ip_send_ready;
     assign udp_send_request = app_data_request;
     assign udp_send_ack = ip_send_ready;
 
-    udp_shift_register udp_shift_register    (           //8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ä´ï¿½ï¿½ï¿½ï¿½ï¿½
+    udp_shift_register udp_shift_register    (           //8¸ö¼¶ÁªµÄÒÆÎ»¼Ä´æÆ÷×é
           .din  (   app_data_in           ),// input [7:0]             
           .clk  (   udp_send_clk          ),// input                   
           .rst  (   ~rstn                 ),// input                   
@@ -74,7 +66,13 @@ module udp_tx #(
 //        .Q    (  shift_data_out                          ) // output [7 : 0] q
     );
   
-
+    localparam  IDLE = 2'd0;
+    localparam  WAIT_ACK = 2'd1;
+    localparam  SEND_UDP_HEADER = 2'd2;
+    localparam  SEND_UDP_PACKET = 2'd3;
+    
+    reg  [1:0]  state;
+    reg  [1:0]  state_n;
     always @(posedge udp_send_clk) 
     begin
         if(~rstn)
@@ -120,9 +118,9 @@ module udp_tx #(
     always @(posedge udp_send_clk) 
     begin
         if(~rstn) 
-            udp_packet_length <= 16'h0008;       //ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Í·
+            udp_packet_length <= 16'h0008;       //×îÐ¡³¤¶ÈÎª°üÍ·
         else
-            udp_packet_length <= app_data_length + 16'h0008;       //UDPï¿½ï¿½ï¿½Ä³ï¿½ï¿½ï¿½
+            udp_packet_length <= app_data_length + 16'h0008;       //UDP±¨ÎÄ³¤¶È
     end
 
     always @(posedge udp_send_clk) 

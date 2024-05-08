@@ -68,7 +68,7 @@ module eth_udp_test#(
     parameter WAIT          = 9'b010_000_000 ;
     parameter CHECK_ARP     = 9'b100_000_000 ;
     `ifdef SIMULATION
-        parameter ONE_SECOND_CNT= 32'd125;//32'd12500;//
+        parameter ONE_SECOND_CNT= 32'd125_000;//32'd12500;//
     `else
         parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
     `endif
@@ -217,7 +217,7 @@ module eth_udp_test#(
                                       
         .rx_en                    (  gmii_rx_dv_1d         ),//input           rx_en,         
         .mac_rx_datain            (  gmii_rxd_1d           ) //input   [7:0]   mac_rx_datain
-    );
+);
 
      reg [159 : 0] test_data_eye = {8'h77,8'h77,8'h77,8'h2E,   //{"w","w","w","."}; 
                                8'h6D,8'h65,8'h79,8'h65,   //{"m","e","y","e"}; 
@@ -234,7 +234,7 @@ module eth_udp_test#(
           //udp_send_data_length <=16'd20 ;
     end
       
-    assign udp_tx_req    = (state == GEN_REQ) ;
+    assign udp_tx_req    = (state == GEN_REQ) ;//例程里没用到
     assign arp_request_req  = (state == ARP_REQ) ;
     
     always@(posedge rgmii_clk)
@@ -250,7 +250,7 @@ module eth_udp_test#(
     end
     
     reg [7:0] test_cnt;
-    always@(posedge rgmii_clk)
+    always@(posedge rgmii_clk)//例程里没用到
     begin
         if(rstn == 1'b0)
         begin
@@ -259,7 +259,7 @@ module eth_udp_test#(
             ram_wr_en  <= 0 ;
             test_cnt   <= 0;
         end
-        else if (state == WRITE_RAM)
+        else if (state == WRITE_RAM)//例程里没到
         begin
             if(test_cnt == 8'd20)
             begin
