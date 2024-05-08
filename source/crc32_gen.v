@@ -22,8 +22,8 @@
 module crc32_gen(
 	input         clk,
     input         rstn,
-	input         crc32_init,       //crc校验值初始化信号
-	input         crc32_en,         //crc校验使能信号
+	input         crc32_init,       //crc鏍￠獙鍊煎垵濮嬪寲淇″彿
+	input         crc32_en,         //crc鏍￠獙浣胯兘淇″彿
 	input         crc_read, 
     input  [7:0]  data,	 
 	output [7:0]  crc_out 

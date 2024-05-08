@@ -145,7 +145,7 @@ module ip_layer#(
         .upper_tx_ready           (  tx_ready                 ),//input                upper_tx_ready,
                                                               
         .ip_tx_req                (  tx_req                   ),//input                ip_tx_req,  
-        .ip_tx_ack                (  tx_ack                   ),//output reg           ip_tx_ack,         //IPÊı¾İ±¨·¢ËÍÇëÇó
+        .ip_tx_ack                (  tx_ack                   ),//output reg           ip_tx_ack,         //IPæ•°æ®æŠ¥å‘é€è¯·æ±‚
         .ip_send_data_length      (  ip_send_data_length      ),//input  [15:0]        ip_send_data_length ,
                                                               
         .mac_tx_ack               (  mac_tx_ack               ),//input                mac_tx_ack,

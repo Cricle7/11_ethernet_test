@@ -31,7 +31,7 @@ module arp_rx(
     input                  arp_rx_req,           //arp rx request from mac                  
     output reg             arp_rx_end,           //arp rx end                               
         
-    // 协议解析反馈端口                                                                                    
+    // 鍗忚瑙ｆ瀽鍙嶉绔彛                                                                                    
     input                  arp_reply_ack,        //arp reply ack from arp reply module      
     output reg             arp_reply_req,        //arp reply request to arp reply module    
                                                                                             

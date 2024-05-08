@@ -93,7 +93,7 @@ module mac_layer(
         .clk                  (  clk                   ),//input                  clk,
         .rstn                 (  rstn                  ),//input                  rstn,
                                                         
-        .mac_tx_req           (  mac_tx_req            ),//input                  mac_tx_req,      //upper layer ¸ømac·¢ËÍÊı¾İÇëÇó
+        .mac_tx_req           (  mac_tx_req            ),//input                  mac_tx_req,      //upper layer ç»™macå‘é€æ•°æ®è¯·æ±‚
         .mac_frame_data       (  mac_frame_data        ),//input      [7:0]       mac_frame_data,  //data from ip or arp
         .mac_tx_ready         (  mac_tx_ready          ),//input                  mac_tx_ready,    //ready from ip or arp
         .mac_tx_end           (  mac_tx_end            ),//input                  mac_tx_end,      //end from ip or arp
