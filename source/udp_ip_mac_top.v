@@ -50,7 +50,7 @@ module udp_ip_mac_top #(
     output          mac_data_valid,
     output  [7:0]   mac_tx_data,   
                                    
-    input           rx_en,         
+    input           rx_en,      
     input   [7:0]   mac_rx_datain
 );
     
@@ -61,7 +61,7 @@ module udp_ip_mac_top #(
     wire             udp_tx_ack;         
                      
     wire             upper_data_req;  
-    wire             udp_rx_req; 
+    wire             udp_rx_req; //接收udp包要用，iplayer给的
     wire             ip_addr_check_error;
     wire [7:0]       net_protocol;      
     wire [31:0]      ip_rec_source_addr;
@@ -71,7 +71,7 @@ module udp_ip_mac_top #(
  
     wire             mac_data_req;
     wire             mac_rec_err;
-    wire  [7:0]      mac_rx_dataout;   
+    wire  [7:0]      mac_rx_dataout;
 
     udp_layer #(
         .LOCAL_PORT_NUM          (  LOCL_PORT                ) //parameter LOCAL_PORT_NUM = 16'hf000    //源端口号

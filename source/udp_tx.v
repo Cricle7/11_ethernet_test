@@ -48,9 +48,13 @@ module udp_tx #(
     reg [3:0]   cnt; 
     wire [7:0]  shift_data_out;
     reg  [15:0] trans_data_cnt;
-
+    localparam  IDLE = 2'd0;
+    localparam  WAIT_ACK = 2'd1;
+    localparam  SEND_UDP_HEADER = 2'd2;
+    localparam  SEND_UDP_PACKET = 2'd3;
     localparam  CHECKSUM = 16'h0000;        //假如UDP包不使用校验和功能，校验和部分需全部置0
-    
+    reg  [1:0]  state;
+    reg  [1:0]  state_n;
     assign udp_send_ready = state != IDLE;//ip_send_ready;
     assign udp_send_request = app_data_request;
     assign udp_send_ack = ip_send_ready;
@@ -66,13 +70,9 @@ module udp_tx #(
 //        .Q    (  shift_data_out                          ) // output [7 : 0] q
     );
   
-    localparam  IDLE = 2'd0;
-    localparam  WAIT_ACK = 2'd1;
-    localparam  SEND_UDP_HEADER = 2'd2;
-    localparam  SEND_UDP_PACKET = 2'd3;
+
     
-    reg  [1:0]  state;
-    reg  [1:0]  state_n;
+
     always @(posedge udp_send_clk) 
     begin
         if(~rstn)
