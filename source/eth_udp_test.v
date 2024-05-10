@@ -68,13 +68,7 @@ module eth_udp_test#(
     parameter SEND          = 9'b001_000_000 ;
     parameter WAIT          = 9'b010_000_000 ;
     parameter CHECK_ARP     = 9'b100_000_000 ;
-    
-    parameter        = 9'b000_010_000 ;
-    parameter WRITE_RAM     = 9'b000_100_000 ;
-    parameter SEND          = 9'b001_000_000 ;
-    parameter WAIT          = 9'b010_000_000 ;
-    parameter CHECK_ARP     = 9'b100_000_000 ;
- 
+    parameter test_data_rx_length = 159;
     `ifdef SIMULATION
         parameter ONE_SECOND_CNT= 32'd125_000;//32'd12500;//
     `else
@@ -233,7 +227,7 @@ module eth_udp_test#(
                                8'h2E,8'h63,8'h6F,8'h6D,   //{".","c","o","m"}; 
                                8'h20,8'h20,8'h20,8'h0A  };//{" "," "," ","\n"};
     reg [1175:0] test_data = {0,test_data_eye};
-    reg [1175*8-1:0] test_data_rx;
+    reg [test_data_rx_length*8-1:0] test_data_rx;
     reg [15 : 0] udp_rec_rdata_cnt;
     always@(posedge rgmii_clk)
     begin
@@ -293,17 +287,10 @@ module eth_udp_test#(
         end
     end
       
-    localparam  IDLE = 2'd0;
-    localparam  WAIT_ACK = 2'd1;
-    localparam  SEND_UDP_HEADER = 2'd2;
-    localparam  SEND_UDP_PACKET = 2'd3;
-    localparam  CHECKSUM = 16'h0000;        //假如UDP包不使用校验和功能，校验和部分需全部置0
-    reg  [1:0]  state;
-    reg  [1:0]  state_n;
-    
+
     always @(posedge rgmii_clk) begin
         if (udp_rec_data_valid) begin
-             test_data_rx <= {test_data_rx[159*8-1-7: 1],udp_rec_rdata} ;
+             test_data_rx <= {test_data_rx[test_data_rx_length*8-1-7: 0],udp_rec_rdata} ;
         end
     end
   
