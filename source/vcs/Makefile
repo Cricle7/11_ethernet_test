@@ -11,7 +11,7 @@ ANLY_FL := $(addprefix -f , $(ANLY_FL))
 ANLY_FLAGS := $(ANLY_FLAGS) -full64 -sverilog -kdb -lca  -override_timescale=1ns/10ps
 ANLY_LOGS = vlogan.log
 anly:
-	vlogan $(ANLY_FLAGS) $(ANLY_DEF)  $(ANLY_FL) -l $(ANLY_LOGS)
+	vlogan $(ANLY_FLAGS) $(ANLY_DEF)  $(ANLY_FL) +define+SIMULATION -l $(ANLY_LOGS)
 ELB_TOP := work.tb_eth_udp_test
 ELB_FLAGS := $(ELB_FLAGS) -full64 -debug_all -kdb -lca -j20
 ELB_LOGS = vcs.log

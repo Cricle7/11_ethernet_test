@@ -35,3 +35,13 @@
 ../../ipcore/udp_shift_register/udp_shift_register.v
 ../../ipcore/udp_shift_register/udp_shift_register_tb.v
 
+../../wm8731/mywav.v
+../../wm8731/sinwave_store.v
+../../wm8731/reg_config.v
+../../wm8731/WM8731_ctrl.v
+../../wm8731/sinwave_gen.v
+../../wm8731/i2c_com.v
+../../wm8731/coeff_reg.v
+../../wm8731/ram_based_shift_register.v
+../../wm8731/Adaptive_filter.v
+../../wm8731/reset_delay.v

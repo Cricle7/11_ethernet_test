@@ -34,7 +34,7 @@ module ip_tx(
     output reg           upper_data_req,  //request data from udp or icmp
     input                upper_tx_ready,
     
-    input                ip_tx_req,  //IPÊı¾İ±¨·¢ËÍÇëÇó
+    input                ip_tx_req,  //IPæ•°æ®æŠ¥å‘é€è¯·æ±‚
     output reg           ip_tx_ack,
     input  [15:0]        ip_send_data_length ,
     

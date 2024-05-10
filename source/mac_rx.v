@@ -44,8 +44,8 @@ module mac_rx(
     reg [4:0]               mac_rx_cnt       ;
     reg [15:0]              mac_crc_cnt      ;
     
-    reg [63:0]              preamble         ;//½ÓÊÕÇ°µ¼Âë           
-    reg [3:0]               preamble_cnt     ;//Ç°µ¼Âë¼ÆÊı
+    reg [63:0]              preamble         ;//æ¥æ”¶å‰å¯¼ç            
+    reg [3:0]               preamble_cnt     ;//å‰å¯¼ç è®¡æ•°
                
     reg [15:0]              frame_type       ;   //type 16'h0800 IP; 16'h0806 ARP
 
@@ -248,8 +248,8 @@ module mac_rx(
     crc32_gen crc32_gen(
         .clk           (  clk        ),//input         clk       ,
         .rstn          (  rstn       ),//input         rstn      ,
-        .crc32_init    (  crcre      ),//input         crc32_init, //crcĞ£ÑéÖµ³õÊ¼»¯ĞÅºÅ
-        .crc32_en      (  crcen      ),//input         crc32_en  ,  //crcĞ£ÑéÊ¹ÄÜĞÅºÅ
+        .crc32_init    (  crcre      ),//input         crc32_init, //crcæ ¡éªŒå€¼åˆå§‹åŒ–ä¿¡å·
+        .crc32_en      (  crcen      ),//input         crc32_en  ,  //crcæ ¡éªŒä½¿èƒ½ä¿¡å·
         .crc_read      (  crc_out_en ),//input         crc_read  , 
         .data          (  crc_din    ),//input  [7:0]  data      ,     
         .crc_out       (  crc_data   ) //output [7:0]  crc_out 
@@ -307,7 +307,7 @@ module mac_rx(
     end
 
     //============================================================================
-    // Ç°µ¼Âë
+    // å‰å¯¼ç 
     always @(posedge clk)
     begin
         if (~rstn) 

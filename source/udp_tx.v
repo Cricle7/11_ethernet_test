@@ -21,49 +21,45 @@
 
 
 module udp_tx #(
-    parameter LOCAL_PORT_NUM = 16'hf000    //Դ�˿ں�
+    parameter LOCAL_PORT_NUM = 16'hf000    //源端口号
 ) (
-    input wire         udp_send_clk,      //ʱ���ź�                                                                                                                                                                                                                                                                                                                                                                
-    input wire         rstn,              //��λ�źţ��͵�ƽ��Ч                                                                                                                                                                                                                                                                                                                                                    
+    input wire         udp_send_clk,      //时钟信号                                                                                                                                                                                                                                                                                                                                                                
+    input wire         rstn,              //复位信号，低电平有效                                                                                                                                                                                                                                                                                                                                                    
                                                                                                                                                                                                                                                                                                                                                                                                                     
     //from software app                                                                                                                                                                                                                                                                                                                                                                                             
-    input wire         app_data_in_valid, //��ģ����ⲿ�����յ����������Ч�źţ��ߵ�ƽ��Ч                                                                                                                                                                                                                                                                                                                        
-    input wire [7:0]   app_data_in,       //��ģ����ⲿ�����յ��������                                                                                                                                                                                                                                                                                                                                            
-    input wire [15:0]  app_data_length,   //��ģ����ⲿ�����յĵ�ǰ���ݰ��ĳ��ȣ�����udp��ip��mac �ײ�������λ���ֽ�                                                                                                                                                                                                                                                                                               
-    input wire [15:0]  udp_dest_port,     //��ģ����ⲿ�����յ����ݰ���Դ�˿ں�                                                                                                                                                                                                                                                                                                                                    
-    input wire         app_data_request,  //�û��ӿ����ݷ������󣬸ߵ�ƽ��Ч                                                                                                                                                                                                                                                                                                                                        
+    input wire         app_data_in_valid, //本模块从外部所接收的数据输出有效信号，高电平有效                                                                                                                                                                                                                                                                                                                        
+    input wire [7:0]   app_data_in,       //本模块从外部所接收的数据输出                                                                                                                                                                                                                                                                                                                                            
+    input wire [15:0]  app_data_length,   //本模块从外部所接收的当前数据包的长度（不含udp、ip、mac 首部），单位：字节                                                                                                                                                                                                                                                                                               
+    input wire [15:0]  udp_dest_port,     //本模块从外部所接收的数据包的源端口号                                                                                                                                                                                                                                                                                                                                    
+    input wire         app_data_request,  //用户接口数据发送请求，高电平有效                                                                                                                                                                                                                                                                                                                                        
                                                                                                                                                                                                                                                                                                                                                                                                                     
-    output wire        udp_send_ready,    //�����ǻ��� ready��request��ack�����ź���ʵ�ֵ�                                                                                                                                                                                                                                                                                                                          
-    output wire        udp_send_ack,      //�����ǻ��� ready��request��ack�����ź���ʵ�ֵ�                                                                                                                                                                                                                                                                                                                          
+    output wire        udp_send_ready,    //握手是基于 ready、request、ack三个信号来实现的                                                                                                                                                                                                                                                                                                                          
+    output wire        udp_send_ack,      //握手是基于 ready、request、ack三个信号来实现的                                                                                                                                                                                                                                                                                                                          
                                                                                                                                                                                                                                                                                                                                                                                                                     
-    input wire         ip_send_ready,     //�����ǻ��� ready��request��ack�����ź���ʵ�ֵ�                                                                                                                                                                                                                                                                                                                          
-    input wire         ip_send_ack,       //�����ǻ��� ready��request��ack�����ź���ʵ�ֵ�                                                                                                                                                                                                                                                                                                                          
+    input wire         ip_send_ready,     //握手是基于 ready、request、ack三个信号来实现的                                                                                                                                                                                                                                                                                                                          
+    input wire         ip_send_ack,       //握手是基于 ready、request、ack三个信号来实现的                                                                                                                                                                                                                                                                                                                          
     //to IP_send                                                                                                                                                                                                                                                                                                                                                                                                    
-    output wire        udp_send_request,  //�û��ӿ����ݷ������󣬸ߵ�ƽ��Ч                                                                                                                                                                                                                                                                                                                                        
-    output reg         udp_data_out_valid,//���͵����������Ч�źţ��ߵ�ƽ��Ч                                                                                                                                                                                                                                                                                                                                      
-    output reg [7:0]   udp_data_out,      //���͵��������                                                                                                                                                                                                                                                                                                                                                          
-    output reg [15:0]  udp_packet_length  //��ǰ���ݰ��ĳ��ȣ�����udp��ip��mac �ײ�������λ���ֽ�                                                                                                                                                                                                                                                                                                                   
+    output wire        udp_send_request,  //用户接口数据发送请求，高电平有效                                                                                                                                                                                                                                                                                                                                        
+    output reg         udp_data_out_valid,//发送的数据输出有效信号，高电平有效                                                                                                                                                                                                                                                                                                                                      
+    output reg [7:0]   udp_data_out,      //发送的数据输出                                                                                                                                                                                                                                                                                                                                                          
+    output reg [15:0]  udp_packet_length  //当前数据包的长度（不含udp、ip、mac 首部），单位：字节                                                                                                                                                                                                                                                                                                                   
 );
 
     reg [3:0]   cnt; 
     wire [7:0]  shift_data_out;
     reg  [15:0] trans_data_cnt;
-
-    localparam  CHECKSUM = 16'h0000;        //����UDP����ʹ��У��͹��ܣ�У��Ͳ�����ȫ����0
-
     localparam  IDLE = 2'd0;
     localparam  WAIT_ACK = 2'd1;
     localparam  SEND_UDP_HEADER = 2'd2;
     localparam  SEND_UDP_PACKET = 2'd3;
-    
+    localparam  CHECKSUM = 16'h0000;        //假如UDP包不使用校验和功能，校验和部分需全部置0
     reg  [1:0]  state;
     reg  [1:0]  state_n;
-
     assign udp_send_ready = state != IDLE;//ip_send_ready;
     assign udp_send_request = app_data_request;
     assign udp_send_ack = ip_send_ready;
 
-    udp_shift_register udp_shift_register    (           //8����������λ�Ĵ�����
+    udp_shift_register udp_shift_register    (           //8个级联的移位寄存器组
           .din  (   app_data_in           ),// input [7:0]             
           .clk  (   udp_send_clk          ),// input                   
           .rst  (   ~rstn                 ),// input                   
@@ -74,6 +70,8 @@ module udp_tx #(
 //        .Q    (  shift_data_out                          ) // output [7 : 0] q
     );
   
+
+    
 
     always @(posedge udp_send_clk) 
     begin
@@ -120,9 +118,9 @@ module udp_tx #(
     always @(posedge udp_send_clk) 
     begin
         if(~rstn) 
-            udp_packet_length <= 16'h0008;       //��С����Ϊ��ͷ
+            udp_packet_length <= 16'h0008;       //最小长度为包头
         else
-            udp_packet_length <= app_data_length + 16'h0008;       //UDP���ĳ���
+            udp_packet_length <= app_data_length + 16'h0008;       //UDP报文长度
     end
 
     always @(posedge udp_send_clk) 

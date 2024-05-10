@@ -10,6 +10,7 @@
 /source/vcs/*
 !/source/vcs/sim_file_list.f
 !/source/vcs/Makefile
+/source/py/Network-monitoring-master/
 run
 *.lock
 *.wf

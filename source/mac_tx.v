@@ -24,7 +24,7 @@ module mac_tx(
     input                  clk,
     input                  rstn,
 
-    input                  mac_tx_req,      //upper layer ¸ømac·¢ËÍÊı¾İÇëÇó
+    input                  mac_tx_req,      //upper layer ç»™macå‘é€æ•°æ®è¯·æ±‚
     input                  mac_tx_ready,    //ready from ip or arp
     input      [7:0]       mac_frame_data,  //data from ip or arp
     input                  mac_tx_end,      //end from ip or arp
@@ -39,13 +39,13 @@ module mac_tx(
 ) ;
        
        
-    reg  [3:0]          mac_tx_cnt    ;     // Ç°µ¼ÂëÓĞ8×Ö½Ú£¬FCSÓĞ4×Ö½Ú£¬ĞèÒª¼ÆÊı¿ØÖÆ£»
+    reg  [3:0]          mac_tx_cnt    ;     // å‰å¯¼ç æœ‰8å­—èŠ‚ï¼ŒFCSæœ‰4å­—èŠ‚ï¼Œéœ€è¦è®¡æ•°æ§åˆ¶ï¼›
     
-    reg  [7:0]          mac_frame_data_1d ; //ÊäÈëÖ¡Êı¾İ´òÅÄ
-    reg                 mac_tx_end_dly_1d,mac_tx_end_dly_2d ; //ÊäÈë×îºóÒ»¸öÊı¾İ¾Ö±êÖ¾´òÅÄ
-    reg  [7:0]          mac_tx_data_tmp ;   //macÊı¾İ·¢ËÍÖĞ¼ä»º³å´¥·¢Æ÷
-    reg                 mac_data_valid_tmp ;//macÊı¾İ·¢ËÍÓĞĞ§ĞÅºÅÖĞ¼ä»º³å´¥·¢Æ÷
-    reg  [15:0]         timeout ;           //³¬Ê±¼ÆÊı£¬µ±Î¬³Ö·¢ËÍ×´Ì¬Ê±ÖÓÖÜÆÚÊı¹ı³¤Ê±£¬ÈÏÎª´«Êä³¬Ê±ÁË£¬Ìø»Øµ½³õÊ¼×´Ì¬£»
+    reg  [7:0]          mac_frame_data_1d ; //è¾“å…¥å¸§æ•°æ®æ‰“æ‹
+    reg                 mac_tx_end_dly_1d,mac_tx_end_dly_2d ; //è¾“å…¥æœ€åä¸€ä¸ªæ•°æ®å±€æ ‡å¿—æ‰“æ‹
+    reg  [7:0]          mac_tx_data_tmp ;   //macæ•°æ®å‘é€ä¸­é—´ç¼“å†²è§¦å‘å™¨
+    reg                 mac_data_valid_tmp ;//macæ•°æ®å‘é€æœ‰æ•ˆä¿¡å·ä¸­é—´ç¼“å†²è§¦å‘å™¨
+    reg  [15:0]         timeout ;           //è¶…æ—¶è®¡æ•°ï¼Œå½“ç»´æŒå‘é€çŠ¶æ€æ—¶é’Ÿå‘¨æœŸæ•°è¿‡é•¿æ—¶ï¼Œè®¤ä¸ºä¼ è¾“è¶…æ—¶äº†ï¼Œè·³å›åˆ°åˆå§‹çŠ¶æ€ï¼›
 
     //MAC send FSM
     parameter SEND_IDLE         =  6'b000_001  ;
@@ -71,37 +71,37 @@ module mac_tx(
         case(send_state)
           SEND_IDLE    :
           begin
-              if (mac_tx_req)//Ó¦ÓÃ²ãÇëÇó·¢ËÍ
+              if (mac_tx_req)//åº”ç”¨å±‚è¯·æ±‚å‘é€
                   send_state_n = SEND_START ;
               else
                   send_state_n = SEND_IDLE ;
           end
           SEND_START     :
           begin
-              if (mac_tx_ready)//Ó¦ÓÃ²ãÊı¾İ×¼±¸¾ÍĞ÷
+              if (mac_tx_ready)//åº”ç”¨å±‚æ•°æ®å‡†å¤‡å°±ç»ª
                   send_state_n = SEND_PREAMBLE ;
               else
                   send_state_n = SEND_START ;
           end
           SEND_PREAMBLE   :
           begin
-              if (mac_tx_cnt == 7)//Ç°ÖÃÂë·¢ËÍÍê³É
+              if (mac_tx_cnt == 7)//å‰ç½®ç å‘é€å®Œæˆ
                   send_state_n = SEND_DATA ;
               else
                   send_state_n = SEND_PREAMBLE ;
           end
           SEND_DATA       :
           begin
-              if (mac_tx_end_dly_2d)//×îºóÒ»¸öÊı¾İÊäÈëÍê³É
+              if (mac_tx_end_dly_2d)//æœ€åä¸€ä¸ªæ•°æ®è¾“å…¥å®Œæˆ
                   send_state_n = SEND_FCS ;
-              else if (timeout == 16'hffff)//·¢ËÍ³¬Ê±
+              else if (timeout == 16'hffff)//å‘é€è¶…æ—¶
                   send_state_n = SEND_END ;
               else
                   send_state_n = SEND_DATA ;
           end
           SEND_FCS        :
           begin
-              if (mac_tx_cnt == 4)//4byte FCS·¢ËÍÍê³É
+              if (mac_tx_cnt == 4)//4byte FCSå‘é€å®Œæˆ
                   send_state_n = SEND_END ;
               else
                   send_state_n = SEND_FCS ;
@@ -117,7 +117,7 @@ module mac_tx(
     begin
        if (~rstn)
            mac_tx_ack <= 1'b0 ;
-       else if (send_state == SEND_START)//Ó¦´ğÉÏ²ã¿ÉÒÔ´Ë´ÎÇëÇó¿ÉÒÔ½øĞĞ·¢ËÍ£¬µÈ´ıÊı¾İÊÇ·ñ×¼±¸ºÃ
+       else if (send_state == SEND_START)//åº”ç­”ä¸Šå±‚å¯ä»¥æ­¤æ¬¡è¯·æ±‚å¯ä»¥è¿›è¡Œå‘é€ï¼Œç­‰å¾…æ•°æ®æ˜¯å¦å‡†å¤‡å¥½
            mac_tx_ack <= 1'b1 ;
        else
            mac_tx_ack <= 1'b0 ;
@@ -127,7 +127,7 @@ module mac_tx(
     begin
         if (~rstn)
             mac_send_end <= 1'b0 ;
-        else if (send_state == SEND_END)//Ò»Ö¡Êı¾İ·¢ËÍÍê³É£»/¶ÔÓ¦Ò»¸ötx_reqµÄ×îºó½á¹û±êÊ¶ÒÑÍê³É
+        else if (send_state == SEND_END)//ä¸€å¸§æ•°æ®å‘é€å®Œæˆï¼›/å¯¹åº”ä¸€ä¸ªtx_reqçš„æœ€åç»“æœæ ‡è¯†å·²å®Œæˆ
             mac_send_end <= 1'b1 ;
         else
             mac_send_end <= 1'b0 ;
@@ -170,8 +170,8 @@ module mac_tx(
     crc32_gen crc32_gen(
         .clk           (  clk        ),//input         clk       ,
         .rstn          (  rstn       ),//input         rstn      ,
-        .crc32_init    (  crcre      ),//input         crc32_init, //crcĞ£ÑéÖµ³õÊ¼»¯ĞÅºÅ
-        .crc32_en      (  crcen      ),//input         crc32_en  ,  //crcĞ£ÑéÊ¹ÄÜĞÅºÅ
+        .crc32_init    (  crcre      ),//input         crc32_init, //crcæ ¡éªŒå€¼åˆå§‹åŒ–ä¿¡å·
+        .crc32_en      (  crcen      ),//input         crc32_en  ,  //crcæ ¡éªŒä½¿èƒ½ä¿¡å·
         .crc_read      (  crc_out_en ),//input         crc_read  , 
         .data          (  crc_din    ),//input  [7:0]  data      ,     
         .crc_out       (  crc_data   ) //output [7:0]  crc_out 
@@ -198,7 +198,7 @@ module mac_tx(
             mac_data_valid <= mac_data_valid_tmp ;
     end
     
-    //request data from arp or ip ÇëÇóÉÏ²ãÊı¾İ
+    //request data from arp or ip è¯·æ±‚ä¸Šå±‚æ•°æ®
     always @(posedge clk)
     begin
         if (~rstn)
