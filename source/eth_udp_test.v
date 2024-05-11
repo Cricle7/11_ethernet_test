@@ -36,6 +36,10 @@ module eth_udp_test#(
     output reg           gmii_tx_en,
     output reg [7:0]     gmii_txd,
                  
+    input                udp_send_data_req,         
+    input [960:0]        udp_send_data ,             
+    input [15:0]         udp_send_data_length,        
+
     output               udp_rec_data_valid,         
     output [7:0]         udp_rec_rdata ,             
     output [15:0]        udp_rec_data_length         
@@ -46,7 +50,6 @@ module eth_udp_test#(
     reg   [7:0]          ram_wr_data ;
     reg                  ram_wr_en ;
     wire                 udp_ram_data_req ;
-    reg [15:0]           udp_send_data_length;
       
     wire                 udp_tx_req ;
     wire                 arp_request_req ;
@@ -186,57 +189,43 @@ module eth_udp_test#(
         end
     end
     
-    udp_ip_mac_top#(
-        .LOCAL_MAC                (LOCAL_MAC               ),// 48'h11_11_11_11_11_11,
-        .LOCAL_IP                 (LOCAL_IP                ),// 32'hC0_A8_01_6E,//192.168.1.110
-        .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
-                                                           
-        .DEST_MAC                 (DEST_MAC                ),// 
-        .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
-        .DEST_PORT                (DEST_PORT               ) // 16'h8080 
+udp_ip_mac_top#(
+    .LOCAL_MAC                (LOCAL_MAC               ),// 48'h11_11_11_11_11_11,
+    .LOCAL_IP                 (LOCAL_IP                ),// 32'hC0_A8_01_6E,//192.168.1.110
+    .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
+                                                        
+    .DEST_MAC                 (DEST_MAC                ),// 
+    .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
+    .DEST_PORT                (DEST_PORT               ) // 16'h8080 
 )udp_ip_mac_top(
-        .rgmii_clk                (  rgmii_clk             ),//input           rgmii_clk,
-        .rstn                     (  rstn                  ),//input           rstn,
-  
-        .app_data_in_valid        (  ram_wr_en             ),//input           app_data_in_valid,
-        .app_data_in              (  ram_wr_data           ),//input   [7:0]   app_data_in,      
-        .app_data_length          (  udp_send_data_length  ),//input   [15:0]  app_data_length,   
-        .app_data_request         (  udp_tx_req            ),//input           app_data_request, 
-                                                           
-        .udp_send_ack             (  udp_ram_data_req      ),//output          udp_send_ack,   
-                                                           
-        .arp_req                  (  arp_request_req       ),//input           arp_req,
-        .arp_found                (  arp_found             ),//output          arp_found,
-        .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
-        .mac_send_end             (  mac_send_end          ),//output          mac_send_end,
-        
-        .udp_rec_rdata            (  udp_rec_rdata         ),//output  [7:0]   udp_rec_rdata ,      //udp ram read data   
-        .udp_rec_data_length      (  udp_rec_data_length   ),//output  [15:0]  udp_rec_data_length,     //udp data length     
-        .udp_rec_data_valid       (  udp_rec_data_valid    ),//output          udp_rec_data_valid,       //udp data valid      
-        
-        .mac_data_valid           (  gmii_tx_en_tmp        ),//output          mac_data_valid,
-        .mac_tx_data              (  gmii_txd_tmp          ),//output  [7:0]   mac_tx_data,   
-                                      
-        .rx_en                    (  gmii_rx_dv_1d         ),//input           rx_en,         
-        .mac_rx_datain            (  gmii_rxd_1d           ) //input   [7:0]   mac_rx_datain
+    .rgmii_clk                (  rgmii_clk             ),//input           rgmii_clk,
+    .rstn                     (  rstn                  ),//input           rstn,
+
+    .app_data_in_valid        (  ram_wr_en             ),//input           app_data_in_valid,
+    .app_data_in              (  ram_wr_data           ),//input   [7:0]   app_data_in,      
+    .app_data_length          (  udp_send_data_length  ),//input   [15:0]  app_data_length,   
+    .app_data_request         (  udp_tx_req            ),//input           app_data_request, 
+                                                        
+    .udp_send_ack             (  udp_ram_data_req      ),//output          udp_send_ack,   
+                                                        
+    .arp_req                  (  arp_request_req       ),//input           arp_req,
+    .arp_found                (  arp_found             ),//output          arp_found,
+    .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
+    .mac_send_end             (  mac_send_end          ),//output          mac_send_end,
+    
+    .udp_rec_rdata            (  udp_rec_rdata         ),//output  [7:0]   udp_rec_rdata ,      //udp ram read data   
+    .udp_rec_data_length      (  udp_rec_data_length   ),//output  [15:0]  udp_rec_data_length,     //udp data length     
+    .udp_rec_data_valid       (  udp_rec_data_valid    ),//output          udp_rec_data_valid,       //udp data valid      
+    
+    .mac_data_valid           (  gmii_tx_en_tmp        ),//output          mac_data_valid,
+    .mac_tx_data              (  gmii_txd_tmp          ),//output  [7:0]   mac_tx_data,   
+                                    
+    .rx_en                    (  gmii_rx_dv_1d         ),//input           rx_en,         
+    .mac_rx_datain            (  gmii_rxd_1d           ) //input   [7:0]   mac_rx_datain
 );
 
-     reg [159 : 0] test_data_eye = {8'h77,8'h77,8'h77,8'h2E,   //{"w","w","w","."}; 
-                               8'h6D,8'h65,8'h79,8'h65,   //{"m","e","y","e"}; 
-                               8'h73,8'h65,8'h6D,8'h69,   //{"s","e","m","i"}; 
-                               8'h2E,8'h63,8'h6F,8'h6D,   //{".","c","o","m"}; 
-                               8'h20,8'h20,8'h20,8'h0A  };//{" "," "," ","\n"};
-    reg [1175:0] test_data = {0,test_data_eye};
     reg [test_data_rx_length*8-1:0] test_data_rx;
     reg [15 : 0] udp_rec_rdata_cnt;
-    always@(posedge rgmii_clk)
-    begin
-        if(rstn == 1'b0)
-    	    udp_send_data_length <= 16'd0 ;
-    	else
-    	    udp_send_data_length <= 4*UDP_DEPTH ;
-          //udp_send_data_length <=16'd20 ;
-    end
       
     assign udp_tx_req    = (state == GEN_REQ) ;//例程里没用到
     assign arp_request_req  = (state == ARP_REQ) ;
@@ -265,7 +254,7 @@ module eth_udp_test#(
         end
         else if (state == WRITE_RAM)//例程里没到
         begin
-            if(test_cnt == 8'd20)
+            if(test_cnt == udp_tx_data_length)
             begin
                 ram_wr_en <=1'b0;
                 write_end <= 1'b1;
@@ -274,7 +263,7 @@ module eth_udp_test#(
             begin
                 ram_wr_en <= 1'b1 ;
                 write_end <= 1'b0 ;
-                ram_wr_data <= test_data_rx[udp_rec_data_length*8-1-{test_cnt[4:0],3'd0} -: 8] ;
+                ram_wr_data <= udp_tx_data[udp_rec_data_length*8-1-{test_cnt[4:0],3'd0} -: 8] ;
                 test_cnt <= test_cnt + 8'd1;
             end
         end

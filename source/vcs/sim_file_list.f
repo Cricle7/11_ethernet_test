@@ -38,7 +38,7 @@
 ../../wm8731/mywav.v
 ../../wm8731/sinwave_store.v
 ../../wm8731/reg_config.v
-../../wm8731/WM8731_ctrl.v
+../../wm8731/audio_loop_top.v
 ../../wm8731/sinwave_gen.v
 ../../wm8731/i2c_com.v
 ../../wm8731/coeff_reg.v

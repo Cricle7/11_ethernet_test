@@ -11,6 +11,7 @@
 !/source/vcs/sim_file_list.f
 !/source/vcs/Makefile
 /source/py/Network-monitoring-master/
+/source/py/audio/
 run
 *.lock
 *.wf
