@@ -56,3 +56,4 @@
 ../../wm8731/Adaptive_filter.v
 ../../wm8731/reset_delay.v
 ../../wm8731/resample_tb.sv
+../../wm8731/net_top.v

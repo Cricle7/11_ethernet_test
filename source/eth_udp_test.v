@@ -80,8 +80,8 @@ module eth_udp_test#(
     `endif
     assign udp_send_data_ready = write_end;
 
-    reg [8:0]    state  ;
-    reg [8:0]    state_n ;
+    reg [9:0]    state  ;
+    reg [9:0]    state_n ;
 
     always @(posedge rgmii_clk)
     begin

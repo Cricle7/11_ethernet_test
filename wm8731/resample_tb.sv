@@ -213,11 +213,9 @@ GTP_GRS GRS_INST(
 
 net_top u_net_top (
   .clk                  (clk),
-  .rst_n                (phy_rstn),
-  .wav_out_data         (wav_out_data), // input [15:0]
-  .wav_rden             (wav_rden),     // output
-  .wav_in_data          (wav_in_data), // output [15:0]
-  .wav_wren             (wav_wren),     // output
+  .rst_n                (),
+  .wav_in_data          (Yout_data), // output [15:0]
+  .wav_wren             (Yout_de),     // output
 
   .udp_send_data_valid  (udp_send_data_valid),
   .udp_send_data_ready  (udp_send_data_ready),

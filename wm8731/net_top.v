@@ -31,16 +31,15 @@ reg [15:0] wav_in_data_reg;
 reg [PAYLOAD_LENGTH_BIT:0] payload; 
 reg [15:0] payload_cnt; 
 
-reg [8:0]    state  ;
-reg [8:0]    state_n ;
+reg [3:0]    state  ;
+reg [3:0]    state_n ;
 
 parameter IDLE          = 3'b001 ;
 parameter WRITE_RAM     = 3'b010 ;
 parameter SEND          = 3'b100 ;
 
-always @(posedge rgmii_clk)
-begin
-    if (~rstn)
+always @(posedge clk) begin
+    if (~rst_n)
         state  <=  IDLE  ;
     else
         state  <= state_n ;
@@ -50,13 +49,15 @@ always @(*) begin
     IDLE:state_n = (wav_wren)?WRITE_RAM:state; 
     WRITE_RAM:state_n = (payload_cnt == PAYLOAD_LENGTH-1)?SEND:state; 
     SEND:state_n = (udp_send_data_ready)?IDLE:state; 
-    default:IDLE; 
+    default:state_n = IDLE; 
   endcase
 end
 assign udp_send_data[UDP_LENGTH_BIT:UDP_LENGTH_BIT-15] = RTP_Header_Param;
 assign udp_send_data[UDP_LENGTH_BIT-64:UDP_LENGTH_BIT-95] = SSRC;
 assign udp_send_data[UDP_LENGTH_BIT-96:0] = payload;
-assign udp_send_data_valid = (state == SEND)? 1'b1,0;
+assign udp_send_data[UDP_LENGTH_BIT-16:UDP_LENGTH_BIT-31] = sequence_number;
+assign udp_send_data[UDP_LENGTH_BIT-31:UDP_LENGTH_BIT-63] = timestamp;
+assign udp_send_data_valid = (state == SEND)? 1'b1:0;
 // 在时钟上升沿处理
 always @(posedge clk) begin
   // 每个时钟周期重置计数器
@@ -64,9 +65,7 @@ always @(posedge clk) begin
     sequence_number <= 0;
     timestamp <= 0;
   end
-  else (wav_wden)begin
-    udp_send_data[UDP_LENGTH_BIT-16:UDP_LENGTH_BIT-31] = sequence_number;
-    udp_send_data[UDP_LENGTH_BIT-31:UDP_LENGTH_BIT-63] = timestamp;
+  else if(wav_wren)begin
     sequence_number <= sequence_number + 1'b1;
     timestamp <= timestamp + 1'b1;
     wav_in_data_reg <= wav_in_data;
