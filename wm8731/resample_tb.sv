@@ -32,7 +32,8 @@ end
 
 initial begin
     clk_in3 = 1'b0;
-    forever #5 clk_in3 = ~clk_in3;
+    #7
+    forever #2 clk_in3 = ~clk_in3;
 end
 
 initial begin
@@ -212,10 +213,10 @@ GTP_GRS GRS_INST(
     ) ;
 
 net_top u_net_top (
-  .clk                  (clk),
-  .rst_n                (),
-  .wav_in_data          (Yout_data), // output [15:0]
-  .wav_wren             (Yout_de),     // output
+  .clk                  (clk_in2),
+  .rst_n                (phy_rstn),
+  .wav_in_data          (per_img_gray), // output [15:0]
+  .wav_wren             (filter_en),     // output
 
   .udp_send_data_valid  (udp_send_data_valid),
   .udp_send_data_ready  (udp_send_data_ready),
@@ -227,29 +228,22 @@ net_top u_net_top (
   .udp_rec_data_length  (udp_rec_data_length)
 );
 
-ethernet_test #(
-  .LOCAL_MAC    (48'hA0_B1_C2_D3_E1_E1),
-  .LOCAL_IP     (32'hC0_A8_01_0B),     // 192.168.1.11
-  .LOCL_PORT    (16'h1F91),            // 8081
-  .DEST_IP      (32'hC0_A8_01_69),     // 192.168.1.105
-  .DEST_PORT    (16'h1F91)
-) inst_eth_test (
-  .clk_50m              (clk),
-  .led                  (led),
-  .phy_rstn             (phy_rstn),
-  .rgmii_rxc            (rgmii_rxc),
-  .rgmii_rx_ctl         (rgmii_rx_ctl),
-  .rgmii_rxd            (rgmii_rxd),
-  .rgmii_txc            (rgmii_txc),
-  .rgmii_tx_ctl         (rgmii_tx_ctl),
-  .rgmii_txd            (rgmii_txd),
-  .udp_send_data_valid  (udp_send_data_valid),
-  .udp_send_data_ready  (udp_send_data_ready),
-  .udp_send_data        (udp_send_data),
-  .udp_send_data_length (udp_send_data_length),
-  .udp_rec_data_valid   (udp_rec_data_valid),
-  .udp_rec_rdata        (udp_rec_rdata),
-  .udp_rec_data_length  (udp_rec_data_length)
+eth_udp_test u_eth_udp_test(
+    .rgmii_clk              (  clk_in3              ),//input                rgmii_clk,
+    .rstn                   (  rstn                 ),//input                rstn,
+    .gmii_rx_dv             (  mac_rx_data_valid    ),//input                gmii_rx_dv,
+    .gmii_rxd               (  mac_rx_data          ),//input  [7:0]         gmii_rxd,
+    .gmii_tx_en             (  mac_data_valid       ),//output reg           gmii_tx_en,
+    .gmii_txd               (  mac_tx_data          ),//output reg [7:0]     gmii_txd,
+                                                    
+    .udp_send_data_valid    (  udp_send_data_valid  ),
+    .udp_send_data_ready    (  udp_send_data_ready  ),
+    .udp_send_data          (  udp_send_data        ),
+    .udp_send_data_length   (  udp_send_data_length ),
+
+    .udp_rec_data_valid     (  udp_rec_data_valid   ),//output               udp_rec_data_valid,         
+    .udp_rec_rdata          (  udp_rec_rdata        ),//output [7:0]         udp_rec_rdata ,             
+    .udp_rec_data_length    (  udp_rec_data_length  ) //output [15:0]        udp_rec_data_length         
 );
 // 实例化Adaptive_filter模块
 // Adaptive_filter adapt_filter_inst (
