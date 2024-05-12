@@ -32,7 +32,7 @@ module WM8731_ctrl (
                 
   output          rgmii_txc,
   output          rgmii_tx_ctl,
-  output [3:0]    rgmii_txd,
+  output [3:0]    rgmii_txd
     
 );
 

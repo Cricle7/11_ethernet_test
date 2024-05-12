@@ -203,7 +203,6 @@ udp_ip_mac_top#(
     .LOCAL_IP                 (LOCAL_IP                ),// 32'hC0_A8_01_6E,//192.168.1.110
     .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
                                                         
-    .DEST_MAC                 (DEST_MAC                ),// 
     .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
     .DEST_PORT                (DEST_PORT               ) // 16'h8080 
 )udp_ip_mac_top(
@@ -263,7 +262,7 @@ udp_ip_mac_top#(
         end
         else if (state == WRITE_RAM)//例程里没到
         begin
-            if(test_cnt == udp_tx_data_length)
+            if(test_cnt == udp_send_data_length)
             begin
                 ram_wr_en <=1'b0;
                 write_end <= 1'b1;
@@ -272,7 +271,7 @@ udp_ip_mac_top#(
             begin
                 ram_wr_en <= 1'b1 ;
                 write_end <= 1'b0 ;
-                ram_wr_data <= udp_tx_data[udp_rec_data_length*8-1-{test_cnt[4:0],3'd0} -: 8] ;
+                ram_wr_data <= udp_send_data[udp_rec_data_length*8-1-{test_cnt[4:0],3'd0} -: 8] ;
                 test_cnt <= test_cnt + 8'd1;
             end
         end

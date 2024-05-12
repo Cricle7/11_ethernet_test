@@ -35,6 +35,16 @@
 ../../ipcore/udp_shift_register/udp_shift_register.v
 ../../ipcore/udp_shift_register/udp_shift_register_tb.v
 
+../../ipcore/single_port_ram_16bit/single_port_ram_16bit.v
+../../ipcore/single_port_ram_16bit/rtl/ipml_spram_v1_5_single_port_ram_16bit.v
+# ../../ipcore/single_port_ram_16bit/rtl/single_port_ram_16bit_init_param.v
+../../ipcore/multiply_accumulator_16bit/multiply_accumulator_16bit.v
+../../ipcore/multiply_accumulator_16bit/rtl/ipml_multacc_v1_1.v
+../../ipcore/product/product.v
+../../ipcore/product/rtl/ipml_mult_v1_2_product.v
+../../ipcore/signle_port_16bit_x_521/signle_port_16bit_x_521.v
+../../ipcore/signle_port_16bit_x_521/rtl/ipml_spram_v1_5_signle_port_16bit_x_521.v
+
 ../../wm8731/mywav.v
 ../../wm8731/sinwave_store.v
 ../../wm8731/reg_config.v
@@ -45,3 +55,4 @@
 ../../wm8731/ram_based_shift_register.v
 ../../wm8731/Adaptive_filter.v
 ../../wm8731/reset_delay.v
+../../wm8731/resample_tb.sv

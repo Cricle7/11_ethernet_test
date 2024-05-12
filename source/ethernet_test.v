@@ -98,16 +98,12 @@ module ethernet_test#(
             idelay_ctl_rst <= 1'b1;
     end 
     
-    wire               udp_rec_data_valid;
-    wire [7:0]         udp_rec_rdata ;    
-    wire [15:0]        udp_rec_data_length;
     
     eth_udp_test #(
         .LOCAL_MAC                (LOCAL_MAC               ),// 48'h11_11_11_11_11_11,
         .LOCAL_IP                 (LOCAL_IP                ),// 32'hC0_A8_01_6E,//192.168.1.110
         .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
                                                            
-        .DEST_MAC                 (DEST_MAC                ),// 
         .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
         .DEST_PORT                (DEST_PORT               ) // 16'h8080 
 )eth_udp_test(
