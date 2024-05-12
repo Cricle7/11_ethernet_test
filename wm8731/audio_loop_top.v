@@ -50,6 +50,15 @@ wire        wav_rden_2       ;
 wire [15:0] wav_in_data_2    ;
 wire        wav_wren_2       ;
 wire        record_en_2      ;
+
+wire                 udp_send_data_valid;
+wire                 udp_send_data_ready;
+wire [960:0]         udp_send_data;
+wire [15:0]          udp_send_data_length;
+wire                 udp_rec_data_valid;
+wire [7:0]           udp_rec_rdata;
+wire [15:0]          udp_rec_data_length;
+
 //		input  [15:0]	wav_out_data,
 		//output     	    wav_rden    ,
     //input           play_en     , 
@@ -153,10 +162,8 @@ ethernet_test #(
 net_top u_net_top (
   .clk                  (clk),
   .rst_n                (phy_rstn),
-  .wav_out_data         (wav_out_data), // input [15:0]
-  .wav_rden             (wav_rden),     // output
-  .wav_in_data          (wav_in_data), // output [15:0]
-  .wav_wren             (wav_wren),     // output
+  .wav_in_data          (wav_in_data), // input [15:0]
+  .wav_wren             (wav_wren),     // input
 
   .udp_send_data_valid  (udp_send_data_valid),
   .udp_send_data_ready  (udp_send_data_ready),

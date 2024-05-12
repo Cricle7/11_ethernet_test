@@ -199,20 +199,70 @@ wire   Yout_de;
 wire   [15:0]   Yout_data;
 wire   [15:0]   err_out;
 
+wire                 udp_send_data_valid;
+wire                 udp_send_data_ready;
+wire [960:0]         udp_send_data;
+wire [15:0]          udp_send_data_length;
+wire                 udp_rec_data_valid;
+wire [7:0]           udp_rec_rdata;
+wire [15:0]          udp_rec_data_length;
+
 GTP_GRS GRS_INST(
     .GRS_N(1'b1)
     ) ;
 
-// 实例化Adaptive_filter模块
-Adaptive_filter adapt_filter_inst (
-    .clk(clk_in2),
-    .rst(!rst_n),
-    .filter_in(per_img_gray),
-    .filter_en(filter_en),
-    .desired_in(per_img_gray),
-    .desired_en(filter_en),
-    .filter_out(Yout_data)
+net_top u_net_top (
+  .clk                  (clk),
+  .rst_n                (phy_rstn),
+  .wav_out_data         (wav_out_data), // input [15:0]
+  .wav_rden             (wav_rden),     // output
+  .wav_in_data          (wav_in_data), // output [15:0]
+  .wav_wren             (wav_wren),     // output
+
+  .udp_send_data_valid  (udp_send_data_valid),
+  .udp_send_data_ready  (udp_send_data_ready),
+  .udp_send_data        (udp_send_data),
+  .udp_send_data_length (udp_send_data_length),
+
+  .udp_rec_data_valid   (udp_rec_data_valid),
+  .udp_rec_rdata        (udp_rec_rdata),
+  .udp_rec_data_length  (udp_rec_data_length)
 );
+
+ethernet_test #(
+  .LOCAL_MAC    (48'hA0_B1_C2_D3_E1_E1),
+  .LOCAL_IP     (32'hC0_A8_01_0B),     // 192.168.1.11
+  .LOCL_PORT    (16'h1F91),            // 8081
+  .DEST_IP      (32'hC0_A8_01_69),     // 192.168.1.105
+  .DEST_PORT    (16'h1F91)
+) inst_eth_test (
+  .clk_50m              (clk),
+  .led                  (led),
+  .phy_rstn             (phy_rstn),
+  .rgmii_rxc            (rgmii_rxc),
+  .rgmii_rx_ctl         (rgmii_rx_ctl),
+  .rgmii_rxd            (rgmii_rxd),
+  .rgmii_txc            (rgmii_txc),
+  .rgmii_tx_ctl         (rgmii_tx_ctl),
+  .rgmii_txd            (rgmii_txd),
+  .udp_send_data_valid  (udp_send_data_valid),
+  .udp_send_data_ready  (udp_send_data_ready),
+  .udp_send_data        (udp_send_data),
+  .udp_send_data_length (udp_send_data_length),
+  .udp_rec_data_valid   (udp_rec_data_valid),
+  .udp_rec_rdata        (udp_rec_rdata),
+  .udp_rec_data_length  (udp_rec_data_length)
+);
+// 实例化Adaptive_filter模块
+// Adaptive_filter adapt_filter_inst (
+    // .clk(clk_in2),
+    // .rst(!rst_n),
+    // .filter_in(per_img_gray),
+    // .filter_en(filter_en),
+    // .desired_in(per_img_gray),
+    // .desired_en(filter_en),
+    // .filter_out(Yout_data)
+// );
 
 //top 
 //#(
