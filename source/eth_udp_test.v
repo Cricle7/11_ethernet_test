@@ -25,7 +25,6 @@ module eth_udp_test#(
     parameter       LOCAL_IP  = 32'hC0_A8_01_6E,//192.168.1.110
     parameter       LOCL_PORT = 16'h8080,
 
-    parameter       DEST_MAC  = 48'h04_D9_F5_89_43_66,
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
     parameter       DEST_PORT = 16'h8080 
 )(
@@ -36,7 +35,8 @@ module eth_udp_test#(
     output reg           gmii_tx_en,
     output reg [7:0]     gmii_txd,
                  
-    input                udp_send_data_req,         
+    input                udp_send_data_valid,         
+    output               udp_send_data_ready,         
     input [960:0]        udp_send_data ,             
     input [15:0]         udp_send_data_length,        
 
@@ -62,22 +62,24 @@ module eth_udp_test#(
     wire                 arp_found ;
        
 
-    parameter IDLE          = 9'b000_000_001 ;
-    parameter ARP_REQ       = 9'b000_000_010 ;
-    parameter ARP_SEND      = 9'b000_000_100 ;
-    parameter ARP_WAIT      = 9'b000_001_000 ;
-    parameter GEN_REQ       = 9'b000_010_000 ;
-    parameter WRITE_RAM     = 9'b000_100_000 ;
-    parameter SEND          = 9'b001_000_000 ;
-    parameter WAIT          = 9'b010_000_000 ;
-    parameter CHECK_ARP     = 9'b100_000_000 ;
+    parameter IDLE          = 10'b0_000_000_001 ;
+    parameter ARP_REQ       = 10'b0_000_000_010 ;
+    parameter ARP_SEND      = 10'b0_000_000_100 ;
+    parameter ARP_WAIT      = 10'b0_000_001_000 ;
+    parameter GEN_REQ       = 10'b0_000_010_000 ;
+    parameter WRITE_RAM     = 10'b0_000_100_000 ;
+    parameter SEND          = 10'b0_001_000_000 ;
+    parameter WAIT          = 10'b0_010_000_000 ;
+    parameter WAIT_REQ      = 10'b0_100_000_000 ;
+    parameter CHECK_ARP     = 10'b1_000_000_000 ;
     parameter test_data_rx_length = 159;
     `ifdef SIMULATION
         parameter ONE_SECOND_CNT= 32'd125_000;//32'd12500;//
     `else
         parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
     `endif
-    
+    assign udp_send_data_ready = write_end;
+
     reg [8:0]    state  ;
     reg [8:0]    state_n ;
 
@@ -127,7 +129,7 @@ module eth_udp_test#(
             WRITE_RAM   :
             begin
                 if (write_end) 
-                    state_n = WAIT     ;
+                    state_n = WAIT_REQ  ;
                 else
                     state_n = WRITE_RAM ;
             end
@@ -141,6 +143,13 @@ module eth_udp_test#(
             WAIT        :
             begin
     		    if (wait_cnt == ONE_SECOND_CNT)    //1s
+                    state_n = CHECK_ARP ;
+                else
+                    state_n = WAIT ;
+            end
+            WAIT_REQ     :
+            begin
+    		    if (udp_send_data_valid)    //1s
                     state_n = CHECK_ARP ;
                 else
                     state_n = WAIT ;

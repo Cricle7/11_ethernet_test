@@ -24,21 +24,29 @@ module ethernet_test#(
     parameter       LOCAL_MAC = 48'ha0_b1_c2_d3_e1_e1,
     parameter       LOCAL_IP  = 32'hC0_A8_01_0B,//192.168.1.11
     parameter       LOCL_PORT = 16'h1F91,//8081
-    parameter       DEST_MAC  = 48'h04_7C_16_EA_2C_AE,
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
     parameter       DEST_PORT = 16'h1F91 
 )(
-    input        clk_50m,
-    output reg   led,
-    output       phy_rstn,
+    input           clk_50m,
+    output reg      led,
+    output          phy_rstn,
 
-    input        rgmii_rxc,
-    input        rgmii_rx_ctl,
-    input [3:0]  rgmii_rxd,
+    input           rgmii_rxc,
+    input           rgmii_rx_ctl,
+    input [3:0]     rgmii_rxd,
                  
-    output       rgmii_txc,
-    output       rgmii_tx_ctl,
-    output [3:0] rgmii_txd 
+    output          rgmii_txc,
+    output          rgmii_tx_ctl,
+    output [3:0]    rgmii_txd,
+
+    input           udp_send_data_valid,         
+    output          udp_send_data_ready,         
+    input [960:0]   udp_send_data ,             
+    input [15:0]    udp_send_data_length,        
+
+    output          udp_rec_data_valid,         
+    output [7:0]    udp_rec_rdata ,             
+    output [15:0]   udp_rec_data_length     
 );
     
     wire         rst;              
@@ -110,6 +118,11 @@ module ethernet_test#(
         .gmii_tx_en             (  mac_data_valid       ),//output reg           gmii_tx_en,
         .gmii_txd               (  mac_tx_data          ),//output reg [7:0]     gmii_txd,
                                                       
+        .udp_send_data_valid    (  udp_send_data_valid  ),
+        .udp_send_data_ready    (  udp_send_data_ready  ),
+        .udp_send_data          (  udp_send_data        ),
+        .udp_send_data_length   (  udp_send_data_length ),
+
         .udp_rec_data_valid     (  udp_rec_data_valid   ),//output               udp_rec_data_valid,         
         .udp_rec_rdata          (  udp_rec_rdata        ),//output [7:0]         udp_rec_rdata ,             
         .udp_rec_data_length    (  udp_rec_data_length  ) //output [15:0]        udp_rec_data_length         
