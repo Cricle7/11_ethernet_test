@@ -12,7 +12,7 @@ module net_top #(
 
   output                  udp_send_data_valid,
   input                   udp_send_data_ready,
-  output [UDP_LENGTH:0]   udp_send_data,
+  output [UDP_LENGTH*8-1:0]   udp_send_data,
   output [15:0]           udp_send_data_length,
 
   input                   udp_rec_data_valid,
@@ -52,11 +52,11 @@ always @(*) begin
     default:state_n = IDLE; 
   endcase
 end
-assign udp_send_data[UDP_LENGTH_BIT:UDP_LENGTH_BIT-15] = RTP_Header_Param;
+assign udp_send_data[UDP_LENGTH_BIT-1:UDP_LENGTH_BIT-15] = RTP_Header_Param;
 assign udp_send_data[UDP_LENGTH_BIT-64:UDP_LENGTH_BIT-95] = SSRC;
 assign udp_send_data[UDP_LENGTH_BIT-96:0] = payload;
 assign udp_send_data[UDP_LENGTH_BIT-16:UDP_LENGTH_BIT-31] = sequence_number;
-assign udp_send_data[UDP_LENGTH_BIT-31:UDP_LENGTH_BIT-63] = timestamp;
+assign udp_send_data[UDP_LENGTH_BIT-32:UDP_LENGTH_BIT-63] = timestamp;
 assign udp_send_data_valid = (state == SEND)? 1'b1:0;
 // 在时钟上升沿处理
 always @(posedge clk) begin
