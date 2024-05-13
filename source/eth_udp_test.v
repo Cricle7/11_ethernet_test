@@ -75,6 +75,7 @@ module eth_udp_test#(
     parameter test_data_rx_length = 159;
     `ifdef SIMULATION
         parameter ONE_SECOND_CNT= 32'd125_000;//32'd12500;//
+        assign arp_found = 1'b1;
     `else
         parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
     `endif
@@ -217,7 +218,12 @@ udp_ip_mac_top#(
     .udp_send_ack             (  udp_ram_data_req      ),//output          udp_send_ack,   
                                                         
     .arp_req                  (  arp_request_req       ),//input           arp_req,
-    .arp_found                (  arp_found             ),//output          arp_found,
+    `ifdef SIMULATION
+        .arp_found                (               ),//output          arp_found,
+    `else
+        .arp_found                (  arp_found             ),//output          arp_found,
+    `endif
+
     .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
     .mac_send_end             (  mac_send_end          ),//output          mac_send_end,
     

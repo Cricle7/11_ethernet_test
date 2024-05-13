@@ -58,6 +58,7 @@ assign udp_send_data[UDP_LENGTH_BIT-96:0] = payload;
 assign udp_send_data[UDP_LENGTH_BIT-16:UDP_LENGTH_BIT-31] = sequence_number;
 assign udp_send_data[UDP_LENGTH_BIT-32:UDP_LENGTH_BIT-63] = timestamp;
 assign udp_send_data_valid = (state == SEND)? 1'b1:0;
+assign udp_send_data_length = UDP_LENGTH;
 // 在时钟上升沿处理
 always @(posedge clk) begin
   // 每个时钟周期重置计数器
