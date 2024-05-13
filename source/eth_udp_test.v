@@ -37,7 +37,7 @@ module eth_udp_test#(
                  
     input                udp_send_data_valid,         
     output               udp_send_data_ready,         
-    input [960:0]        udp_send_data ,             
+    input [1024*8-1:0]   udp_send_data ,//先给这么多，爆了再改得了             
     input [15:0]         udp_send_data_length,        
 
     output               udp_rec_data_valid,         
@@ -74,8 +74,9 @@ module eth_udp_test#(
     parameter CHECK_ARP     = 10'b1_000_000_000 ;
     parameter test_data_rx_length = 159;
     `ifdef SIMULATION
-        parameter ONE_SECOND_CNT= 32'd125_000;//32'd12500;//
+        parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
         assign arp_found = 1'b1;
+        assign mac_not_exist = 1'b0;
     `else
         parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
     `endif
@@ -130,7 +131,7 @@ module eth_udp_test#(
             WRITE_RAM   :
             begin
                 if (write_end) 
-                    state_n = WAIT_REQ  ;
+                    state_n = WAIT  ;
                 else
                     state_n = WRITE_RAM ;
             end
@@ -143,7 +144,9 @@ module eth_udp_test#(
             end
             WAIT        :
             begin
-    		    if (wait_cnt == ONE_SECOND_CNT)    //1s
+                if (udp_send_data_valid) 
+                    state_n = CHECK_ARP ;
+    		    else if (wait_cnt == ONE_SECOND_CNT)    //1s
                     state_n = CHECK_ARP ;
                 else
                     state_n = WAIT ;
@@ -152,8 +155,11 @@ module eth_udp_test#(
             begin
     		    if (udp_send_data_valid)    //1s
                     state_n = CHECK_ARP ;
+                else if (wait_cnt == ONE_SECOND_CNT) begin
+                    state_n = CHECK_ARP ;
+                end
                 else
-                    state_n = WAIT ;
+                    state_n = WAIT_REQ ;
             end
             CHECK_ARP   :
             begin
@@ -220,11 +226,12 @@ udp_ip_mac_top#(
     .arp_req                  (  arp_request_req       ),//input           arp_req,
     `ifdef SIMULATION
         .arp_found                (               ),//output          arp_found,
+        .mac_not_exist            (           ),//output          mac_not_exist, 
     `else
         .arp_found                (  arp_found             ),//output          arp_found,
+        .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
     `endif
 
-    .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
     .mac_send_end             (  mac_send_end          ),//output          mac_send_end,
     
     .udp_rec_rdata            (  udp_rec_rdata         ),//output  [7:0]   udp_rec_rdata ,      //udp ram read data   
@@ -256,7 +263,7 @@ udp_ip_mac_top#(
     	    wait_cnt <= 0 ;
     end
     
-    reg [7:0] test_cnt;
+    reg [15:0] test_cnt;
     always@(posedge rgmii_clk)//例程里没用到
     begin
         if(rstn == 1'b0)

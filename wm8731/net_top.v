@@ -27,7 +27,6 @@ parameter UDP_LENGTH_BIT        = 8*UDP_LENGTH ;
 
 reg [15:0] sequence_number; // 序列号
 reg [31:0] timestamp; // 时间戳
-reg [15:0] wav_in_data_reg; 
 reg [PAYLOAD_LENGTH_BIT:0] payload; 
 reg [15:0] payload_cnt; 
 
@@ -69,12 +68,15 @@ always @(posedge clk) begin
   else if(wav_wren)begin
     sequence_number <= sequence_number + 1'b1;
     timestamp <= timestamp + 1'b1;
-    wav_in_data_reg <= wav_in_data;
   end
 end
 
 always @(posedge clk) begin
-  if (wav_wren) begin
+  if (~ rst_n) begin
+    payload_cnt <= 0;
+    payload <= 0;
+  end
+  else if (wav_wren) begin
     if (state == WRITE_RAM) begin
       payload_cnt <= payload_cnt + 1'b1;
       payload <= {payload[PAYLOAD_LENGTH_BIT-1-15: 0],wav_in_data};

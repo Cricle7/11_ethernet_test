@@ -214,7 +214,7 @@ GTP_GRS GRS_INST(
 
 net_top u_net_top (
   .clk                  (clk_in2),
-  .rst_n                (phy_rstn),
+  .rst_n                (rst_n),
   .wav_in_data          (per_img_gray), // output [15:0]
   .wav_wren             (filter_en),     // output
 
@@ -230,7 +230,7 @@ net_top u_net_top (
 
 eth_udp_test u_eth_udp_test(
     .rgmii_clk              (  clk_in3              ),//input                rgmii_clk,
-    .rstn                   (  rstn                 ),//input                rstn,
+    .rstn                   (  rst_n                 ),//input                rstn,
     .gmii_rx_dv             (  mac_rx_data_valid    ),//input                gmii_rx_dv,
     .gmii_rxd               (  mac_rx_data          ),//input  [7:0]         gmii_rxd,
     .gmii_tx_en             (  mac_data_valid       ),//output reg           gmii_tx_en,
