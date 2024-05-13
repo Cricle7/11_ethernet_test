@@ -69,8 +69,8 @@ module eth_udp_test#(
     parameter GEN_REQ       = 10'b0_000_010_000 ;
     parameter WRITE_RAM     = 10'b0_000_100_000 ;
     parameter SEND          = 10'b0_001_000_000 ;
-    parameter WAIT          = 10'b0_010_000_000 ;
-    parameter WAIT_REQ      = 10'b0_100_000_000 ;
+    parameter WAIT_VALID_END= 10'b0_010_000_000 ;
+    parameter WAIT          = 10'b0_100_000_000 ;
     parameter CHECK_ARP     = 10'b1_000_000_000 ;
     parameter test_data_rx_length = 159;
     parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
@@ -133,7 +133,7 @@ module eth_udp_test#(
             WRITE_RAM   :
             begin
                 if (write_end) 
-                    state_n = WAIT  ;
+                    state_n = WAIT_VALID_END  ;
                 else
                     state_n = WRITE_RAM ;
             end
@@ -153,15 +153,12 @@ module eth_udp_test#(
                 else
                     state_n = WAIT ;
             end
-            WAIT_REQ     :
+            WAIT_VALID_END     :
             begin
-    		    if (udp_send_data_valid)    //1s
-                    state_n = CHECK_ARP ;
-                else if (wait_cnt == ONE_SECOND_CNT) begin
-                    state_n = CHECK_ARP ;
-                end
+    		    if (~udp_send_data_valid)    //1s
+                    state_n = WAIT ;
                 else
-                    state_n = WAIT_REQ ;
+                    state_n = WAIT_VALID_END ;
             end
             CHECK_ARP   :
             begin
