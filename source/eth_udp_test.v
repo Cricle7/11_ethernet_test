@@ -73,12 +73,10 @@ module eth_udp_test#(
     parameter WAIT_REQ      = 10'b0_100_000_000 ;
     parameter CHECK_ARP     = 10'b1_000_000_000 ;
     parameter test_data_rx_length = 159;
+    parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
     `ifdef SIMULATION
-        parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
         assign arp_found = 1'b1;
         assign mac_not_exist = 1'b0;
-    `else
-        parameter ONE_SECOND_CNT= 32'd125_000_000;//32'd12500;//
     `endif
     assign udp_send_data_ready = write_end;
 
@@ -98,9 +96,12 @@ module eth_udp_test#(
         case(state)
             IDLE        :
             begin
-              if (wait_cnt == ONE_SECOND_CNT)    //1s
-                    state_n = ARP_REQ ;
-                else
+                `ifdef SIMULATION
+                `else
+                    if (wait_cnt == ONE_SECOND_CNT)    //1s
+                        state_n = ARP_REQ ;
+                    else
+                `endif
                     state_n = IDLE ;
             end
             ARP_REQ     :
@@ -248,7 +249,7 @@ udp_ip_mac_top#(
     reg [test_data_rx_length*8-1:0] test_data_rx;
     reg [15 : 0] udp_rec_rdata_cnt;
       
-    assign udp_tx_req    = (state == GEN_REQ) ;//例程里没用到
+    assign udp_tx_req    = (state == GEN_REQ) ;
     assign arp_request_req  = (state == ARP_REQ) ;
     
     always@(posedge rgmii_clk)
@@ -284,7 +285,7 @@ udp_ip_mac_top#(
             begin
                 ram_wr_en <= 1'b1 ;
                 write_end <= 1'b0 ;
-                ram_wr_data <= udp_send_data[udp_rec_data_length*8-1-{test_cnt[4:0],3'd0} -: 8] ;
+                ram_wr_data <= udp_send_data[udp_send_data_length*8-1-{test_cnt[15:0],3'd0} -: 8] ;
                 test_cnt <= test_cnt + 8'd1;
             end
         end
