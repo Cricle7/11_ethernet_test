@@ -202,7 +202,7 @@ wire   [15:0]   err_out;
 
 wire                 udp_send_data_valid;
 wire                 udp_send_data_ready;
-wire [960:0]         udp_send_data;
+wire [7679:0]         udp_send_data;
 wire [15:0]          udp_send_data_length;
 wire                 udp_rec_data_valid;
 wire [7:0]           udp_rec_rdata;
@@ -245,6 +245,17 @@ eth_udp_test u_eth_udp_test(
     .udp_rec_rdata          (  udp_rec_rdata        ),//output [7:0]         udp_rec_rdata ,             
     .udp_rec_data_length    (  udp_rec_data_length  ) //output [15:0]        udp_rec_data_length         
 );
+
+ always @(posedge clk_in2) begin
+    if (udp_send_data_valid && udp_send_data_ready) begin
+        $display("udp_send_data_valid is high. payload_data=%h", resample_tb.u_net_top.payload); // 当udp_send_data_valid为高时打印udp_send_data的值
+        $display("udp_send_data_valid is high. udp_send_data=%h", udp_send_data); // 当udp_send_data_valid为高时打印udp_send_data的值
+        $display("%d", resample_tb.u_net_top.UDP_LENGTH_BIT-96); // 当udp_send_data_valid为高时打印udp_send_data的值
+        $display("%d", resample_tb.u_net_top.PAYLOAD_LENGTH_BIT); // 当udp_send_data_valid为高时打印udp_send_data的值
+
+    end
+ end
+
 // 实例化Adaptive_filter模块
 // Adaptive_filter adapt_filter_inst (
     // .clk(clk_in2),

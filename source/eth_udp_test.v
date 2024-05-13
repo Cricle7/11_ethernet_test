@@ -97,12 +97,13 @@ module eth_udp_test#(
             IDLE        :
             begin
                 `ifdef SIMULATION
+                    state_n = ARP_REQ ;
                 `else
                     if (wait_cnt == ONE_SECOND_CNT)    //1s
                         state_n = ARP_REQ ;
                     else
+                        state_n = IDLE ;
                 `endif
-                    state_n = IDLE ;
             end
             ARP_REQ     :
                 state_n = ARP_SEND ;

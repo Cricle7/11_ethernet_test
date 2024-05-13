@@ -43,6 +43,7 @@ always @(posedge clk) begin
     else
         state  <= state_n ;
 end
+
 always @(*) begin
   case (state)
     IDLE:state_n = (wav_wren)?WRITE_RAM:state; 
@@ -51,11 +52,8 @@ always @(*) begin
     default:state_n = IDLE; 
   endcase
 end
-assign udp_send_data[UDP_LENGTH_BIT-1:UDP_LENGTH_BIT-15] = RTP_Header_Param;
-assign udp_send_data[UDP_LENGTH_BIT-64:UDP_LENGTH_BIT-95] = SSRC;
-assign udp_send_data[UDP_LENGTH_BIT-96:0] = payload;
-assign udp_send_data[UDP_LENGTH_BIT-16:UDP_LENGTH_BIT-31] = sequence_number;
-assign udp_send_data[UDP_LENGTH_BIT-32:UDP_LENGTH_BIT-63] = timestamp;
+
+assign udp_send_data = {RTP_Header_Param,sequence_number,timestamp,SSRC,payload};
 assign udp_send_data_valid = (state == SEND)? 1'b1:0;
 assign udp_send_data_length = UDP_LENGTH;
 // 在时钟上升沿处理
