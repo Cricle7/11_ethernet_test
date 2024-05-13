@@ -163,7 +163,7 @@ end
   end
 
 assign phy_rstn = rstn;
-
+assign clk = clk_50m;
 //=======================================================
 // 对于 udp_send_data_valid 信号做跨时钟域处理（clk -> rgmii_clk）
 //=======================================================
@@ -173,31 +173,31 @@ reg                 S_clr_flag_rgmii_clk_udp_send_data_valid_d1;
 //=======================================================
 // 对于 udp_send_data_ready 信号做跨时钟域处理（rgmii_clk -> clk）
 //=======================================================
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d0;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d1;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d2;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d3;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d4;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d5;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d6;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d7;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d8;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d9;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d10;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d11;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d12;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d13;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d14;
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_d15;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d0;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d1;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d2;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d3;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d4;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d5;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d6;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d7;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d8;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d9;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d10;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d11;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d12;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d13;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d14;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_d15;
 
-wire                S_clr_flag_rgmii_clk_udp_send_data_ready_all;
+reg                S_clr_flag_rgmii_clk_udp_send_data_ready_all;
 
-wire                S_clr_flag_clk_udp_send_data_ready_posedge;
+reg                S_clr_flag_clk_udp_send_data_ready_posedge;
 
 
-wire                S_clr_flag_clk_udp_send_data_ready_d0;
-wire                S_clr_flag_clk_udp_send_data_ready_d1;
-wire                S_clr_flag_clk_udp_send_data_ready_d2;
+reg                S_clr_flag_clk_udp_send_data_ready_d0;
+reg                S_clr_flag_clk_udp_send_data_ready_d1;
+reg                S_clr_flag_clk_udp_send_data_ready_d2;
 //=======================================================
 // 时钟域 clk
 //=======================================================
