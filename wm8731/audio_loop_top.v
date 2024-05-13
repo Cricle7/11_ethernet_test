@@ -150,7 +150,7 @@ ethernet_test #(
   .rgmii_txc            (rgmii_txc),
   .rgmii_tx_ctl         (rgmii_tx_ctl),
   .rgmii_txd            (rgmii_txd),
-  .udp_send_data_valid  (udp_send_data_valid),
+  .udp_send_data_valid  (udp_send_data_valid),//input
   .udp_send_data_ready  (),
   .S_clr_flag_clk_udp_send_data_ready_posedge(udp_send_data_ready),       
   .udp_send_data        (udp_send_data),
@@ -166,7 +166,7 @@ net_top u_net_top (
   .wav_in_data          (wav_in_data), // input [15:0]
   .wav_wren             (wav_wren),     // input
 
-  .udp_send_data_valid  (udp_send_data_valid),
+  .udp_send_data_valid  (udp_send_data_valid),//output
   .udp_send_data_ready  (udp_send_data_ready),
   .udp_send_data        (udp_send_data),
   .udp_send_data_length (udp_send_data_length),

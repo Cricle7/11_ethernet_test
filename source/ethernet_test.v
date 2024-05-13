@@ -116,7 +116,7 @@ module ethernet_test#(
         .gmii_tx_en             (  mac_data_valid       ),//output reg           gmii_tx_en,
         .gmii_txd               (  mac_tx_data          ),//output reg [7:0]     gmii_txd,
                                                       
-        .udp_send_data_valid    (  S_clr_flag_rgmii_clk_udp_send_data_valid_d1),
+        .udp_send_data_valid    (  udp_send_data_valid_reg),
         .udp_send_data_ready    (  udp_send_data_ready  ),
         .udp_send_data          (  udp_send_data        ),
         .udp_send_data_length   (  udp_send_data_length ),
@@ -167,9 +167,8 @@ assign clk = clk_50m;
 //=======================================================
 // 对于 udp_send_data_valid 信号做跨时钟域处理（clk -> rgmii_clk）
 //=======================================================
-reg                 S_clr_flag_rgmii_clk_udp_send_data_valid_d0;
-reg                 S_clr_flag_rgmii_clk_udp_send_data_valid_d1;
-
+reg                S_clr_flag_rgmii_clk_udp_send_data_valid_d0;
+reg                S_clr_flag_rgmii_clk_udp_send_data_valid_d1;
 //=======================================================
 // 对于 udp_send_data_ready 信号做跨时钟域处理（rgmii_clk -> clk）
 //=======================================================
@@ -212,6 +211,8 @@ end
 //=======================================================
 // 时钟域 rgmii_clk
 //=======================================================
+wire               S_clr_flag_rgmii_clk_udp_send_data_valid_d11;
+assign udp_rec_data_valid_reg = S_clr_flag_rgmii_clk_udp_send_data_valid_d1;
 always @(posedge rgmii_clk) begin
   S_clr_flag_rgmii_clk_udp_send_data_valid_d0 <= udp_send_data_valid;
   S_clr_flag_rgmii_clk_udp_send_data_valid_d1 <= S_clr_flag_rgmii_clk_udp_send_data_valid_d0;
