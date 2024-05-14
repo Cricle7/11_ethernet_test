@@ -212,7 +212,7 @@ end
 // 时钟域 rgmii_clk
 //=======================================================
 wire               S_clr_flag_rgmii_clk_udp_send_data_valid_d11;
-assign udp_rec_data_valid_reg = S_clr_flag_rgmii_clk_udp_send_data_valid_d1;
+assign udp_send_data_valid_reg = S_clr_flag_rgmii_clk_udp_send_data_valid_d1;
 always @(posedge rgmii_clk) begin
   S_clr_flag_rgmii_clk_udp_send_data_valid_d0 <= udp_send_data_valid;
   S_clr_flag_rgmii_clk_udp_send_data_valid_d1 <= S_clr_flag_rgmii_clk_udp_send_data_valid_d0;

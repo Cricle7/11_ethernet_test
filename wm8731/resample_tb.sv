@@ -294,9 +294,10 @@ always @(posedge clk_in3) begin
 end
 
 wire   Yout_de;
+wire   [15:0]   wav_in_data;
 wire   [15:0]   Yout_data;
 wire   [15:0]   err_out;
-
+assign wav_in_data = filter_en ? per_img_gray : 0;
 GTP_GRS GRS_INST(
     .GRS_N(1'b1)
     ) ;
@@ -304,7 +305,7 @@ GTP_GRS GRS_INST(
 net_top u_net_top (
   .clk                  (clk_in2),
   .rst_n                (rst_n),
-  .wav_in_data          (per_img_gray), // output [15:0]
+  .wav_in_data          (wav_in_data), // output [15:0]
   .wav_wren             (filter_en),     // output
 
   .udp_send_data_valid  (udp_send_data_valid),

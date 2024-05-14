@@ -75,9 +75,9 @@ always @(posedge clk) begin
     payload <= 0;
   end
   else if (wav_wren) begin
-    if (state == WRITE_RAM) begin
+    payload <= {payload[PAYLOAD_LENGTH_BIT-1-15: 0],wav_in_data};
+    if (state == WRITE_RAM ) begin
       payload_cnt <= payload_cnt + 1'b1;
-      payload <= {payload[PAYLOAD_LENGTH_BIT-1-15: 0],wav_in_data};
     end
     else begin
       payload_cnt <= 0;
