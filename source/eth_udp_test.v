@@ -26,7 +26,8 @@ module eth_udp_test#(
     parameter       LOCL_PORT = 16'h8080,
 
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
-    parameter       DEST_PORT = 16'h8080 
+    parameter       DEST_PORT = 16'h8080,
+    parameter UDP_LENGTH = 960    //一定要保证payload_length为整数 
 )(
     input                rgmii_clk,
     input                rstn,
@@ -37,7 +38,7 @@ module eth_udp_test#(
                  
     input                udp_send_data_valid,         
     output               udp_send_data_ready,         
-    input [1024*8-1:0]   udp_send_data ,//先给这么多，爆了再改得了             
+    input [UDP_LENGTH*8-1:0]   udp_send_data ,//先给这么多，爆了再改得了             
     input [15:0]         udp_send_data_length,        
 
     output               udp_rec_data_valid,         

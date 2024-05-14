@@ -22,8 +22,8 @@ module WM8731_ctrl (
   output   	      I2C_SCLK_2  ,
   inout 	        I2C_SDAT_2  ,
 
-  input           clk_50m,
-  output reg      led,
+  output reg      led,  
+  output reg [3:0]led_stage,
   output          phy_rstn,
 
   input           rgmii_rxc,
@@ -36,6 +36,11 @@ module WM8731_ctrl (
     
 );
 
+  parameter RTP_Header_Param = 16'h8080; // 版本号（V=2） + 填充位（P=0） + 扩展位（X=0） + CSRC 计数（CC=0）
+                                         // + 标记位（M=0） + 负载类型（PT=0）
+  parameter SSRC = 32'h12345678; // SSRC 设置为常量值，例如，这里设置为 32 位的常量值 0x12345678
+  parameter UDP_LENGTH = 960;    //一定要保证payload_length为整数
+
 wire        rst              ;
 wire [15:0] wav_out_data     ;
 wire        wav_rden         ;
@@ -46,6 +51,7 @@ assign rst = ~ rst_n;
 
 wire [15:0] wav_out_data_2   ;
 reg [15:0] wav_in_data_2_reg;
+reg [15:0] wav_in_data_1_reg ;
 wire        wav_rden_2       ;
 wire [15:0] wav_in_data_2    ;
 wire        wav_wren_2       ;
@@ -53,12 +59,12 @@ wire        record_en_2      ;
 
 wire                 udp_send_data_valid;
 wire                 udp_send_data_ready;
-wire [960:0]         udp_send_data;
+wire [UDP_LENGTH*8-1:0]    udp_send_data;
 wire [15:0]          udp_send_data_length;
 wire                 udp_rec_data_valid;
 wire [7:0]           udp_rec_rdata;
 wire [15:0]          udp_rec_data_length;
-
+wire [9:0] stage    ;
 //		input  [15:0]	wav_out_data,
 		//output     	    wav_rden    ,
     //input           play_en     , 
@@ -84,6 +90,11 @@ wire [15:0]          udp_rec_data_length;
 always @(posedge clk) begin
   if (wav_wren_2) begin
     wav_in_data_2_reg <= wav_in_data_2;
+  end
+end
+always @(posedge clk) begin
+  if (wav_wren) begin
+    wav_in_data_1_reg <= wav_in_data;
   end
 end
 mywav u_my_wav (
@@ -160,7 +171,12 @@ ethernet_test #(
   .udp_rec_data_length  (udp_rec_data_length)
 );
 
-net_top u_net_top (
+net_top #(
+  .RTP_Header_Param(16'h8080), // 版本号（V=2） + 填充位（P=0） + 扩展位（X=0） + CSRC 计数（CC=0）
+                                         // + 标记位（M=0） + 负载类型（PT=0）
+  .SSRC( 32'h12345678), // SSRC 设置为常量值，例如，这里设置为 32 位的常量值 0x12345678
+  .UDP_LENGTH( UDP_LENGTH)    //一定要保证payload_length为整数
+)u_net_top (
   .clk                  (clk),
   .rst_n                (phy_rstn),
   .wav_in_data          (wav_in_data), // input [15:0]
@@ -175,4 +191,32 @@ net_top u_net_top (
   .udp_rec_rdata        (udp_rec_rdata),
   .udp_rec_data_length  (udp_rec_data_length)
 );
+    parameter IDLE          = 10'b0_000_000_001 ;
+    parameter ARP_REQ       = 10'b0_000_000_010 ;
+    parameter ARP_SEND      = 10'b0_000_000_100 ;
+    parameter ARP_WAIT      = 10'b0_000_001_000 ;
+    parameter GEN_REQ       = 10'b0_000_010_000 ;
+    parameter WRITE_RAM     = 10'b0_000_100_000 ;
+    parameter SEND          = 10'b0_001_000_000 ;
+    parameter WAIT_VALID_END= 10'b0_010_000_000 ;
+    parameter WAIT          = 10'b0_100_000_000 ;
+    parameter CHECK_ARP     = 10'b1_000_000_000 ;
+always @(*)
+    begin
+        case(state)
+            IDLE        :led_stage = 4'd1;
+            ARP_REQ     :led_stage = 4'd2;
+            ARP_SEND    :led_stage = 4'd3;
+            ARP_WAIT    :led_stage = 4'd4;
+            GEN_REQ     :led_stage = 4'd5;
+            WRITE_RAM   :led_stage = 4'd6;
+            SEND        :led_stage = 4'd7;
+            WAIT        :led_stage = 4'd8;
+            WAIT_VALID_END     :led_stage = 4'd9;
+            CHECK_ARP   :led_stage = 4'd10;
+            default     : led_stage = 4'd11;
+        endcase
+end
+
+
 endmodule //WM8731_ctrl

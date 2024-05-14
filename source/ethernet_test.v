@@ -25,7 +25,8 @@ module ethernet_test#(
     parameter       LOCAL_IP  = 32'hC0_A8_01_0B,//192.168.1.11
     parameter       LOCL_PORT = 16'h1F91,//8081
     parameter       DEST_IP   = 32'hC0_A8_01_69,//192.168.1.105
-    parameter       DEST_PORT = 16'h1F91 
+    parameter       DEST_PORT = 16'h1F91, 
+    parameter UDP_LENGTH = 960
 )(
     input           clk_50m,
     output reg      led,
@@ -43,8 +44,13 @@ module ethernet_test#(
     output          udp_send_data_ready,  
     output          S_clr_flag_clk_udp_send_data_ready_posedge,       
 
-    input [960:0]   udp_send_data ,             
+    input [UDP_LENGTH*8-1:0]   udp_send_data ,             
     input [15:0]    udp_send_data_length,        
+    `ifdef SIMULATION
+    input           rgmii_clk,         
+    `else
+    `endif
+
 
     output          udp_rec_data_valid,         
     output [7:0]    udp_rec_rdata ,             
@@ -107,7 +113,8 @@ module ethernet_test#(
         .LOCL_PORT                (LOCL_PORT               ),// 16'h8080,
                                                            
         .DEST_IP                  (DEST_IP                 ),// 32'hC0_A8_01_69,//192.168.1.105
-        .DEST_PORT                (DEST_PORT               ) // 16'h8080 
+        .DEST_PORT                (DEST_PORT               ), // 16'h8080 
+        .UDP_LENGTH               (UDP_LENGTH              ) 
 )eth_udp_test(
         .rgmii_clk              (  rgmii_clk            ),//input                rgmii_clk,
         .rstn                   (  rstn                 ),//input                rstn,
@@ -129,7 +136,8 @@ module ethernet_test#(
     wire        arp_found;
     wire        mac_not_exist;
     wire [7:0]  state;
-    
+    `ifdef SIMULATION
+    `else
     rgmii_interface rgmii_interface(
         .rst                       (  ~rstn              ),//input        rst,
         .rgmii_clk                 (  rgmii_clk          ),//output       rgmii_clk,
@@ -150,6 +158,9 @@ module ethernet_test#(
         .rgmii_tx_ctl              (  rgmii_tx_ctl       ),//output       rgmii_tx_ctl,
         .rgmii_txd                 (  rgmii_txd          ) //output [3:0] rgmii_txd 
     );
+        .arp_found                (  arp_found             ),//output          arp_found,
+        .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
+    `endif
 assign led_test =  (udp_rec_data_valid== 1'b1 ? (|udp_rec_rdata) : (&udp_rec_data_length));
 //test led
 reg[31:0] cnt_timer;

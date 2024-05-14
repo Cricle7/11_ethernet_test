@@ -201,7 +201,7 @@ wire                 udp_rec_data_valid;
 wire [7:0]           udp_rec_rdata;
 wire [15:0]          udp_rec_data_length;
 
-
+/*
 //----------------------------------------------------------------------
 //=======================================================
 // 对于 udp_send_data_valid 信号做跨时钟域处理（clk -> rgmii_clk）
@@ -292,11 +292,19 @@ always @(posedge clk_in3) begin
   | S_clr_flag_rgmii_clk_udp_send_data_ready_d15;  
 
 end
-
+*/
 wire   Yout_de;
 wire   [15:0]   wav_in_data;
 wire   [15:0]   Yout_data;
 wire   [15:0]   err_out;
+wire           rgmii_rxc;
+wire           rgmii_rx_ctl;
+wire [3:0]     rgmii_rxd;
+                 
+wire          rgmii_txc;
+wire          rgmii_tx_ctl;
+wire [3:0]    rgmii_txd;
+
 assign wav_in_data = filter_en ? per_img_gray : 0;
 GTP_GRS GRS_INST(
     .GRS_N(1'b1)
@@ -309,7 +317,7 @@ net_top u_net_top (
   .wav_wren             (filter_en),     // output
 
   .udp_send_data_valid  (udp_send_data_valid),
-  .udp_send_data_ready  (S_clr_flag_clk_udp_send_data_ready_posedge),
+  .udp_send_data_ready  (udp_send_data_ready),
   .udp_send_data        (udp_send_data),
   .udp_send_data_length (udp_send_data_length),
 
@@ -318,23 +326,33 @@ net_top u_net_top (
   .udp_rec_data_length  (udp_rec_data_length)
 );
 
-eth_udp_test u_eth_udp_test(
-    .rgmii_clk              (  clk_in3              ),//input                rgmii_clk,
-    .rstn                   (  rst_n                ),//input                rstn,
-    .gmii_rx_dv             (  mac_rx_data_valid    ),//input                gmii_rx_dv,
-    .gmii_rxd               (  mac_rx_data          ),//input  [7:0]         gmii_rxd,
-    .gmii_tx_en             (  mac_data_valid       ),//output reg           gmii_tx_en,
-    .gmii_txd               (  mac_tx_data          ),//output reg [7:0]     gmii_txd,
-                                                    
-    .udp_send_data_valid    (  S_clr_flag_rgmii_clk_udp_send_data_valid_d1  ),
-    .udp_send_data_ready    (  udp_send_data_ready  ),
-    .udp_send_data          (  udp_send_data        ),
-    .udp_send_data_length   (  udp_send_data_length ),
-
-    .udp_rec_data_valid     (  udp_rec_data_valid   ),//output               udp_rec_data_valid,         
-    .udp_rec_rdata          (  udp_rec_rdata        ),//output [7:0]         udp_rec_rdata ,             
-    .udp_rec_data_length    (  udp_rec_data_length  ) //output [15:0]        udp_rec_data_length         
+ethernet_test #(
+  .LOCAL_MAC    (48'hA0_B1_C2_D3_E1_E1),
+  .LOCAL_IP     (32'hC0_A8_01_0B),     // 192.168.1.11
+  .LOCL_PORT    (16'h1F91),            // 8081
+  .DEST_IP      (32'hC0_A8_01_69),     // 192.168.1.105
+  .DEST_PORT    (16'h1F91)
+) inst_eth_test (
+  .clk_50m              (clk_in2),
+  .led                  (led),
+  .phy_rstn             (phy_rstn),
+  .rgmii_clk            (clk_in3),
+  .rgmii_rxc            (rgmii_rxc),
+  .rgmii_rx_ctl         (rgmii_rx_ctl),
+  .rgmii_rxd            (rgmii_rxd),
+  .rgmii_txc            (rgmii_txc),
+  .rgmii_tx_ctl         (rgmii_tx_ctl),
+  .rgmii_txd            (rgmii_txd),
+  .udp_send_data_valid  (udp_send_data_valid),//input
+  .udp_send_data_ready  (),
+  .S_clr_flag_clk_udp_send_data_ready_posedge(udp_send_data_ready),       
+  .udp_send_data        (udp_send_data),
+  .udp_send_data_length (udp_send_data_length),
+  .udp_rec_data_valid   (udp_rec_data_valid),
+  .udp_rec_rdata        (udp_rec_rdata),
+  .udp_rec_data_length  (udp_rec_data_length)
 );
+
 
  always @(posedge clk_in2) begin
     if (udp_send_data_valid && udp_send_data_ready) begin
