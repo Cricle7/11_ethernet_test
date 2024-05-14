@@ -158,8 +158,6 @@ module ethernet_test#(
         .rgmii_tx_ctl              (  rgmii_tx_ctl       ),//output       rgmii_tx_ctl,
         .rgmii_txd                 (  rgmii_txd          ) //output [3:0] rgmii_txd 
     );
-        .arp_found                (  arp_found             ),//output          arp_found,
-        .mac_not_exist            (  mac_not_exist         ),//output          mac_not_exist, 
     `endif
 assign led_test =  (udp_rec_data_valid== 1'b1 ? (|udp_rec_rdata) : (&udp_rec_data_length));
 //test led
