@@ -63,7 +63,7 @@ always @(posedge clk) begin
     sequence_number <= 0;
     timestamp <= 0;
   end
-  else if(wav_wren)begin
+  else if(wav_wren && payload_cnt == PAYLOAD_LENGTH-1)begin
     sequence_number <= sequence_number + 1'b1;
     timestamp <= timestamp + 1'b1;
   end
