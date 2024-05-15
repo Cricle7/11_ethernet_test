@@ -139,7 +139,7 @@ Adaptive_filter #(
   .rst          (rst),
   .filter_in    (wav_in_data), 
   //.filter_en    (wav_rden), 之前写的，打问号
-  .filter_en    (wav_wden), 
+  .filter_en    (wav_wren), 
   .desired_in   (wav_in_data_2_reg),
   .filter_out   (),
   .error_out    (wav_out_data)
@@ -168,7 +168,8 @@ ethernet_test #(
   .udp_send_data_length (udp_send_data_length),
   .udp_rec_data_valid   (udp_rec_data_valid),
   .udp_rec_rdata        (udp_rec_rdata),
-  .udp_rec_data_length  (udp_rec_data_length)
+  .udp_rec_data_length  (udp_rec_data_length),
+  .state    (  state  )
 );
 
 net_top #(
@@ -217,6 +218,5 @@ always @(*)
             default     : led_stage = 4'd11;
         endcase
 end
-
 
 endmodule //WM8731_ctrl

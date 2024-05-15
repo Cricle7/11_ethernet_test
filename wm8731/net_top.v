@@ -27,7 +27,7 @@ parameter UDP_LENGTH_BIT        = 8*UDP_LENGTH ;
 
 reg [15:0] sequence_number; // 序列号
 reg [31:0] timestamp; // 时间戳
-reg [PAYLOAD_LENGTH_BIT:0] payload; 
+reg [PAYLOAD_LENGTH_BIT-1:0] payload; 
 reg [15:0] payload_cnt; 
 
 reg [3:0]    state  ;
