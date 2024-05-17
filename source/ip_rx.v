@@ -46,9 +46,9 @@ module ip_rx(
     output reg             ip_checksum_error
 ) ;
     `ifdef SIMULATION
-        `include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
+        include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
     `else
-        `include "check_sum.vh"
+        include "check_sum.vh"
     `endif
     reg  [15:0]            ip_rx_cnt ;
     reg  [15:0]            ip_rec_data_length ;
