@@ -47,6 +47,15 @@ wire                 udp_rec_data_valid;
 wire [7:0]           udp_rec_rdata;
 wire [15:0]          udp_rec_data_length;
 
+reg  [15:0]          wav_in_data_test;
+always @(posedge clk) begin
+  if (~rst_n) begin
+    wav_in_data_test <= 0;
+  end
+  if (wav_wren) begin
+    wav_in_data_test <= wav_in_data_test + 1'b1;
+  end
+end
 mywav u_my_wav (
   .clk50M        (clk),
   .wav_out_data  (wav_out_data), // input [15:0]
@@ -98,7 +107,7 @@ net_top #(
 )u_net_top (
   .clk                  (clk),
   .rst_n                (phy_rstn),
-  .wav_in_data          (wav_in_data), // input [15:0]
+  .wav_in_data          (wav_in_data_test), // input [15:0]
   .wav_wren             (wav_wren),     // input
 
   .udp_send_data_valid  (udp_send_data_valid),//output
