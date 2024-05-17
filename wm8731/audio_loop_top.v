@@ -87,7 +87,7 @@ ethernet_test #(
   .udp_send_data_length (udp_send_data_length),
   .udp_rec_data_valid   (udp_rec_data_valid),
   .udp_rec_rdata        (udp_rec_rdata),
-  .udp_rec_data_length  (udp_rec_data_length),
+  .udp_rec_data_length  (udp_rec_data_length)
 );
 
 net_top #(
