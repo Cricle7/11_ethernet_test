@@ -48,11 +48,6 @@ wire [7:0]           udp_rec_rdata;
 wire [15:0]          udp_rec_data_length;
 wire [9:0] stage    ;
 
-always @(posedge clk) begin
-  if (wav_wren) begin
-    wav_in_data_1_reg <= wav_in_data;
-  end
-end
 mywav u_my_wav (
   .clk50M        (clk),
   .wav_out_data  (wav_out_data), // input [15:0]

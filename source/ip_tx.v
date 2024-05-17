@@ -48,9 +48,9 @@ module ip_tx(
 ) ;
 
     `ifdef SIMULATION
-        include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
+        `include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"  
     `else
-        include "check_sum.vh"
+        `include "check_sum.vh"
     `endif
     localparam MAC_TYPE      = 16'h0800 ;
     localparam IP_VERSION    = 4'h4     ;  //ipv4

@@ -52,8 +52,6 @@
 ../../wm8731/sinwave_gen.v
 ../../wm8731/i2c_com.v
 ../../wm8731/coeff_reg.v
-../../wm8731/ram_based_shift_register.v
-../../wm8731/Adaptive_filter.v
 ../../wm8731/reset_delay.v
 ../../wm8731/resample_tb.sv
 ../../wm8731/net_top.v
