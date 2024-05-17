@@ -89,7 +89,6 @@ ethernet_test #(
   .udp_rec_data_valid   (udp_rec_data_valid),
   .udp_rec_rdata        (udp_rec_rdata),
   .udp_rec_data_length  (udp_rec_data_length),
-  .state    (  state  )
 );
 
 net_top #(
