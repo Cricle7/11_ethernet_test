@@ -362,8 +362,11 @@ module icmp(
     wire [15:0] checksum ;
     reg  [2:0]  checksum_cnt ;
 
-    `include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
-    //`include "check_sum.vh"
+    `ifdef SIMULATION
+        `include "/home/circle7/Project/FPGA_project/11_ethernet_test/11_ethernet_test/source/check_sum.vh"   
+    `else
+        `include "check_sum.vh"
+    `endif
     
     always @(posedge clk)
     begin

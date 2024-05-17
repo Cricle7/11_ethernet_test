@@ -294,7 +294,7 @@ always @(posedge clk_in3) begin
 end
 */
 wire   Yout_de;
-wire   [15:0]   wav_in_data;
+reg   [15:0]   wav_in_data;
 wire   [15:0]   Yout_data;
 wire   [15:0]   err_out;
 wire           rgmii_rxc;
@@ -305,7 +305,14 @@ wire          rgmii_txc;
 wire          rgmii_tx_ctl;
 wire [3:0]    rgmii_txd;
 
-assign wav_in_data = filter_en ? per_img_gray : 0;
+always @(posedge clk_in2) begin
+  if (~rst_n) begin
+    wav_in_data <= 0;
+  end
+  else if (filter_en) begin
+    wav_in_data <= wav_in_data + 1'b1;
+  end
+end
 GTP_GRS GRS_INST(
     .GRS_N(1'b1)
     ) ;
